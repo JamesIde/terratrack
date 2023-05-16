@@ -21,10 +21,25 @@
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
-      }
+      },
+      "package": "com.tudor14abw.terratrack"
     },
     "web": {
       "favicon": "./assets/favicon.png"
+    },
+    "plugins": [
+      [
+        "@rnmapbox/maps",
+        {
+          "RNMapboxMapsImpl": "mapbox",
+          "RNMapboxMapsDownloadToken": ""
+        }
+      ]
+    ],
+    "extra": {
+      "eas": {
+        "projectId": "611c0648-6e8d-421d-aa28-a2dfb0f5a1d8"
+      }
     }
   }
 }
