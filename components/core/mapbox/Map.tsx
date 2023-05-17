@@ -1,13 +1,13 @@
-import { Button, StyleSheet } from "react-native";
+import { Button, Dimensions, StyleSheet } from "react-native";
 import React, { useEffect, useRef } from "react";
 import Mapbox, { Camera, MapView, UserLocation } from "@rnmapbox/maps";
 import { CONFIG } from "../../../config/config";
-import { SafeAreaView } from "react-native-safe-area-context";
-import { globalStyles } from "../../../global/styles/globalStyles";
 import { CameraRef } from "@rnmapbox/maps/lib/typescript/components/Camera";
 import { mapStore } from "../../../stores/mapStore";
-import { MapStyleTypes } from "../../../@types/mapStyleTypes";
+import StatOverlay from "../overlay/statOverlay";
+import MapStyleButton from "../../buttons/mapStyle";
 Mapbox.setAccessToken(CONFIG.MAP.ACCESS_TOKEN);
+Mapbox.requestAndroidLocationPermissions();
 export default function Map() {
   const cameraRef = useRef<CameraRef>(null);
   const mapRef = useRef<MapView>(null);
@@ -16,22 +16,17 @@ export default function Map() {
     state.toggleMapStyle,
   ]);
 
-  function pressMe() {
-    if (mapStyle.TYPE === MapStyleTypes.SATELLITE) {
-      toggleMapStyle(MapStyleTypes.TOPOGRAPHIC);
-    } else {
-      toggleMapStyle(MapStyleTypes.SATELLITE);
-    }
-  }
-
   return (
-    <SafeAreaView style={globalStyles.safeViewContainer}>
-      <Button title="click" onPress={pressMe} />
+    <>
       <Mapbox.MapView
         style={styles.map}
         compassEnabled
+        compassPosition={{
+          top: Dimensions.get("window").height * 0.04,
+          left: 10,
+        }}
         zoomEnabled={true}
-        scaleBarEnabled={true}
+        scaleBarEnabled={false}
         scrollEnabled={true}
         // We need to create sat/topo map in mapbox studio like in WAT app to do a switcher... Using WAT default for now
         styleURL={mapStyle.URL}
@@ -49,7 +44,9 @@ export default function Map() {
           showsUserHeadingIndicator={true}
         />
       </Mapbox.MapView>
-    </SafeAreaView>
+      <MapStyleButton />
+      <StatOverlay />
+    </>
   );
 }
 
