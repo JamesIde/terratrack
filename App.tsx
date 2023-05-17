@@ -1,13 +1,17 @@
 import { StatusBar } from "expo-status-bar";
-import { StyleSheet, Text, View } from "react-native";
-import { SafeAreaView } from "react-native-safe-area-context";
-import Map from "./component/mapbox/Map";
+import { GestureHandlerRootView } from "react-native-gesture-handler";
+import { globalStyles } from "./global/styles/globalStyles";
+import Activity from "./components/core/activities/Activity";
+import Map from "./components/core/mapbox/Map";
 
 export default function App() {
   return (
     <>
       <StatusBar style="auto" />
-      <Map />
+      <GestureHandlerRootView style={globalStyles.safeViewContainer}>
+        <Map />
+        <Activity />
+      </GestureHandlerRootView>
     </>
   );
 }
