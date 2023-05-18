@@ -16,6 +16,7 @@ export default function Recording() {
     state.handleRecording,
   ]);
 
+  // TODO separate functions for different states to include other business logic (clear locations, show modal, etc)
   const renderIcons = () => {
     if (recordingState.isRecording) {
       return (

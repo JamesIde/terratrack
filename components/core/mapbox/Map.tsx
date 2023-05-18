@@ -2,30 +2,36 @@ import { Button, Dimensions, StyleSheet, View } from "react-native";
 import React, { useEffect, useRef } from "react";
 import Mapbox, {
   Camera,
+  LineLayer,
   MapView,
   PointAnnotation,
+  ShapeSource,
   UserLocation,
   UserLocationRenderMode,
 } from "@rnmapbox/maps";
 import { CONFIG } from "../../../config/config";
 import { CameraRef } from "@rnmapbox/maps/lib/typescript/components/Camera";
 import { mapStore } from "../../../stores/mapStore";
-import FocusCurrentPosition from "../../buttons/focusCurrentPosition";
+import FocusCurrentPosition from "../../buttons/FocusCurrentPosition";
 import { trackingStore } from "../../../stores/trackingStore";
-import Recording from "../../buttons/recording";
+import Recording from "../../buttons/Recording";
 import StatOverlay from "../overlay/statOverlay";
-import MapStyleButton from "../../buttons/mapStyle";
+import MapStyleButton from "../../buttons/MapStyle";
+import { recordingStore } from "../../../stores/recordingStore";
+import CurrentShapeSource from "./CurrentShapeSource";
 Mapbox.setAccessToken(CONFIG.MAP.ACCESS_TOKEN);
 Mapbox.requestAndroidLocationPermissions();
 export default function Map() {
   const cameraRef = useRef<CameraRef>(null);
   const mapRef = useRef<MapView>(null);
-  const [mapStyle, toggleMapStyle] = mapStore((state) => [
-    state.mapStyle,
-    state.toggleMapStyle,
+  const mapStyle = mapStore((state) => state.mapStyle);
+  const [recordingState, updateLocation] = recordingStore((state) => [
+    state.recordingState,
+    state.updateLocation,
   ]);
   const followUser = trackingStore((state) => state.followUser);
   // The coordinates for point annotation follow [longitude, latitude]. Longitude is the bigger number (138), latitude is the smaller number (-35).
+
   return (
     <>
       <Mapbox.MapView
@@ -55,14 +61,14 @@ export default function Map() {
           animated={true}
           requestsAlwaysUse={true}
           visible={true}
-          onUpdate={(location) =>
-            console.log(`${JSON.stringify(location.coords)}`)
-          }
+          onUpdate={(location) => {
+            if (recordingState.isRecording) {
+              updateLocation(location.coords);
+            }
+          }}
           minDisplacement={0}
         />
-        <PointAnnotation id="test" coordinate={[138.773431, -35.052564]}>
-          <View style={{ padding: 3, backgroundColor: "red" }}></View>
-        </PointAnnotation>
+        <CurrentShapeSource />
       </Mapbox.MapView>
       {/* Embedding here may cause too many components to re-render */}
       <FocusCurrentPosition />

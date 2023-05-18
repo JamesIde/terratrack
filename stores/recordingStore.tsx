@@ -12,7 +12,7 @@ export const recordingStore = create<{
   };
   handleRecording: (action: RecordingStateEnum) => void;
   updateLocation: (location: Coordinate) => void;
-  toggleLine: () => void;
+  setShowLine: (show: boolean) => void;
 }>((set) => ({
   locations: [],
   showLine: false,
@@ -60,9 +60,9 @@ export const recordingStore = create<{
       locations: [...state.locations, location],
     }));
   },
-  toggleLine: () => {
+  setShowLine: (show: boolean) => {
     set((state) => ({
-      showLine: !state.showLine,
+      showLine: show,
     }));
   },
 }));
