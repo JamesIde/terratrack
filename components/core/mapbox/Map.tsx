@@ -1,8 +1,9 @@
-import { Button, Dimensions, StyleSheet } from "react-native";
+import { Button, Dimensions, StyleSheet, View } from "react-native";
 import React, { useEffect, useRef } from "react";
 import Mapbox, {
   Camera,
   MapView,
+  PointAnnotation,
   UserLocation,
   UserLocationRenderMode,
 } from "@rnmapbox/maps";
@@ -23,7 +24,7 @@ export default function Map() {
     state.toggleMapStyle,
   ]);
   const followUser = trackingStore((state) => state.followUser);
-
+  // The coordinates for point annotation follow [longitude, latitude]. Longitude is the bigger number (138), latitude is the smaller number (-35).
   return (
     <>
       <Mapbox.MapView
@@ -58,6 +59,9 @@ export default function Map() {
           }
           minDisplacement={0}
         />
+        <PointAnnotation id="test" coordinate={[138.773431, -35.052564]}>
+          <View style={{ padding: 3, backgroundColor: "red" }}></View>
+        </PointAnnotation>
       </Mapbox.MapView>
       {/* Embedding here may cause too many components to re-render */}
       <FocusCurrentPosition />

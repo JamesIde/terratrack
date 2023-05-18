@@ -4,7 +4,6 @@ import { useMemo, useCallback } from "react";
 import { styles } from "../mapbox/Map";
 import { Dimensions } from "react-native";
 export default function Activity() {
-  // variables
   const data = useMemo(
     () =>
       Array(50)
@@ -13,13 +12,6 @@ export default function Activity() {
     []
   );
   const snapPoints = useMemo(() => ["5%", "50%"], []);
-
-  // callbacks
-  const handleRefresh = useCallback(() => {
-    console.log("handleRefresh");
-  }, []);
-
-  // render
   const renderItem = useCallback(
     ({ item }: { item: any }) => (
       <View style={styles.itemContainer}>
@@ -35,11 +27,9 @@ export default function Activity() {
         keyExtractor={(i) => i}
         renderItem={renderItem}
         contentContainerStyle={styles.contentContainer}
-        refreshing={false}
-        onRefresh={handleRefresh}
         style={{
-          marginBottom: Dimensions.get("window").height * 0.1,
-          marginTop: Dimensions.get("window").height * 0.05,
+          marginBottom: Dimensions.get("window").height * 0.01,
+          marginTop: Dimensions.get("window").height * 0.04,
         }}
       />
     </BottomSheet>
