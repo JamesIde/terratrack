@@ -14,6 +14,7 @@ import StatOverlay from "../overlay/statOverlay";
 import MapStyleButton from "../../buttons/mapStyle";
 import FocusCurrentPosition from "../../buttons/focusCurrentPosition";
 import { trackingStore } from "../../../stores/trackingStore";
+import Recording from "../../buttons/recording";
 Mapbox.setAccessToken(CONFIG.MAP.ACCESS_TOKEN);
 Mapbox.requestAndroidLocationPermissions();
 export default function Map() {
@@ -67,6 +68,7 @@ export default function Map() {
       <FocusCurrentPosition />
       <MapStyleButton />
       <StatOverlay />
+      <Recording />
     </>
   );
 }

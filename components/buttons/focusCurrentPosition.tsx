@@ -1,4 +1,4 @@
-import { View, Text, StyleSheet, Pressable } from "react-native";
+import { View, Text, StyleSheet, Pressable, Dimensions } from "react-native";
 import { trackingStore } from "../../stores/trackingStore";
 import * as Haptics from "expo-haptics";
 import { globalColors } from "../../global/styles/globalColors";
@@ -36,8 +36,9 @@ const styles = StyleSheet.create({
   container: {
     position: "absolute",
     bottom: "50%",
+    right: 0,
     alignSelf: "flex-end",
-    padding: 10,
+    marginRight: Dimensions.get("window").width * 0.05,
   },
   background: {
     backgroundColor: globalColors.btnBackgroundOverlay,
