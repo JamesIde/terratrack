@@ -12,7 +12,7 @@ export default function App() {
       <StatusBar style="auto" />
       <GestureHandlerRootView style={globalStyles.safeViewContainer}>
         <Map />
-        {/* <Activity /> */}
+        <Activity />
       </GestureHandlerRootView>
     </SafeAreaView>
   );

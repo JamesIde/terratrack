@@ -1,11 +1,18 @@
 import { Button, Dimensions, StyleSheet } from "react-native";
 import React, { useEffect, useRef } from "react";
-import Mapbox, { Camera, MapView, UserLocation } from "@rnmapbox/maps";
+import Mapbox, {
+  Camera,
+  MapView,
+  UserLocation,
+  UserLocationRenderMode,
+} from "@rnmapbox/maps";
 import { CONFIG } from "../../../config/config";
 import { CameraRef } from "@rnmapbox/maps/lib/typescript/components/Camera";
 import { mapStore } from "../../../stores/mapStore";
 import StatOverlay from "../overlay/statOverlay";
 import MapStyleButton from "../../buttons/mapStyle";
+import FocusCurrentPosition from "../../buttons/focusCurrentPosition";
+import { trackingStore } from "../../../stores/trackingStore";
 Mapbox.setAccessToken(CONFIG.MAP.ACCESS_TOKEN);
 Mapbox.requestAndroidLocationPermissions();
 export default function Map() {
@@ -15,6 +22,7 @@ export default function Map() {
     state.mapStyle,
     state.toggleMapStyle,
   ]);
+  const followUser = trackingStore((state) => state.followUser);
 
   return (
     <>
@@ -28,11 +36,11 @@ export default function Map() {
         zoomEnabled={true}
         scaleBarEnabled={false}
         scrollEnabled={true}
-        // We need to create sat/topo map in mapbox studio like in WAT app to do a switcher... Using WAT default for now
+        // TODO We need to create sat/topo map in mapbox studio like in WAT app to do a switcher... Using WAT default for now
         styleURL={mapStyle.URL}
       >
         <Camera
-          followUserLocation={true}
+          followUserLocation={followUser}
           ref={cameraRef}
           defaultSettings={CONFIG.MAP.DEFAULT_SETTINGS.SHEOAK}
           minZoomLevel={11.5}
@@ -40,10 +48,19 @@ export default function Map() {
         />
         <UserLocation
           androidRenderMode="normal"
-          requestsAlwaysUse
+          renderMode={UserLocationRenderMode.Native}
           showsUserHeadingIndicator={true}
+          animated={true}
+          requestsAlwaysUse={true}
+          visible={true}
+          onUpdate={(location) =>
+            console.log(`${JSON.stringify(location.coords)}`)
+          }
+          minDisplacement={0}
         />
       </Mapbox.MapView>
+      {/* Embedding here may cause too many components to re-render */}
+      <FocusCurrentPosition />
       <MapStyleButton />
       <StatOverlay />
     </>

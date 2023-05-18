@@ -16,6 +16,7 @@ export default function MapStyleButton() {
     if (mapStyle.TYPE === MapStyleTypes.SATELLITE) {
       toggleMapStyle(MapStyleTypes.TOPOGRAPHIC);
     } else {
+      // Explicit else otherwise doesn't toggle properly
       toggleMapStyle(MapStyleTypes.SATELLITE);
     }
   }
@@ -27,7 +28,7 @@ export default function MapStyleButton() {
           {mapStyle.TYPE === MapStyleTypes.TOPOGRAPHIC ? (
             <Entypo name="globe" size={25} color="black" />
           ) : (
-            <Ionicons name="globe-sharp" size={25} color="black" />
+            <Ionicons name="globe-outline" size={25} color="black" />
           )}
         </View>
       </View>
