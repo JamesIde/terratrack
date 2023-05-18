@@ -1,9 +1,9 @@
 import { create } from "zustand";
 import { RecordingStateEnum } from "../@types/enum/recordingStateEnum";
+import { Coordinate } from "../@types/coordinates";
 
-// TODO Type all of this when we know what to expect!!!
 export const recordingStore = create<{
-  locations: any[];
+  locations: Array<Coordinate>;
   showLine: boolean;
   recordingState: {
     isRecording: boolean;
@@ -11,7 +11,7 @@ export const recordingStore = create<{
     isStopped: boolean;
   };
   handleRecording: (action: RecordingStateEnum) => void;
-  updateLocation: (location: any) => void;
+  updateLocation: (location: Coordinate) => void;
   toggleLine: () => void;
 }>((set) => ({
   locations: [],
