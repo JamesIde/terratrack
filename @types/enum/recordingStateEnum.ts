@@ -1,5 +1,5 @@
 export enum RecordingStateEnum {
-  Recording = "Recording",
-  Stopped = "Stopped",
-  Paused = "Paused",
+  RECORDING = "Recording",
+  STOPPED = "Stopped",
+  PAUSED = "Paused",
 }

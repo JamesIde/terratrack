@@ -10,11 +10,11 @@ import Mapbox, {
 import { CONFIG } from "../../../config/config";
 import { CameraRef } from "@rnmapbox/maps/lib/typescript/components/Camera";
 import { mapStore } from "../../../stores/mapStore";
-import StatOverlay from "../overlay/statOverlay";
-import MapStyleButton from "../../buttons/mapStyle";
 import FocusCurrentPosition from "../../buttons/focusCurrentPosition";
 import { trackingStore } from "../../../stores/trackingStore";
 import Recording from "../../buttons/recording";
+import StatOverlay from "../overlay/statOverlay";
+import MapStyleButton from "../../buttons/mapStyle";
 Mapbox.setAccessToken(CONFIG.MAP.ACCESS_TOKEN);
 Mapbox.requestAndroidLocationPermissions();
 export default function Map() {
