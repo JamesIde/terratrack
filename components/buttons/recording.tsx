@@ -8,6 +8,7 @@ export default function Recording() {
     <View style={styles.container}>
       <Ionicons name="stop-circle" size={45} color="grey" />
       <MaterialCommunityIcons name="record-circle" size={45} color="red" />
+      <Ionicons name="pause-circle" size={45} color="red" />
     </View>
   );
 }
