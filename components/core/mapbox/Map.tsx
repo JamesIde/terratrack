@@ -1,37 +1,43 @@
-import { Button, Dimensions, StyleSheet, View } from "react-native";
-import React, { useEffect, useRef } from "react";
+import { Dimensions, StyleSheet } from "react-native";
+import React, { useRef } from "react";
 import Mapbox, {
   Camera,
-  LineLayer,
   MapView,
-  PointAnnotation,
-  ShapeSource,
   UserLocation,
   UserLocationRenderMode,
 } from "@rnmapbox/maps";
 import { CONFIG } from "../../../config/config";
 import { CameraRef } from "@rnmapbox/maps/lib/typescript/components/Camera";
 import { mapStore } from "../../../stores/mapStore";
-import FocusCurrentPosition from "../../buttons/FocusCurrentPosition";
 import { trackingStore } from "../../../stores/trackingStore";
+import { recordingStore } from "../../../stores/recordingStore";
 import Recording from "../../buttons/Recording";
 import StatOverlay from "../overlay/statOverlay";
+import FocusCurrentPosition from "../../buttons/FocusCurrentPosition";
 import MapStyleButton from "../../buttons/MapStyle";
-import { recordingStore } from "../../../stores/recordingStore";
 import CurrentShapeSource from "./CurrentShapeSource";
+import { transformCoord } from "../../../utils/processCoord";
+/**
+ * We don't want to manipulate the mapbox location object if we can avoid it.
+ * If we do, have a util method that does that. Don't want to lose track over the app
+ * Where coordinates are of different types when they all should be the same.
+ * Use utils heavily for data transforming.
+ * The coordinates for point annotation follow [longitude, latitude]. Longitude is the bigger number (138), latitude is the smaller number (-35).
+ */
 Mapbox.setAccessToken(CONFIG.MAP.ACCESS_TOKEN);
 Mapbox.requestAndroidLocationPermissions();
 export default function Map() {
   const cameraRef = useRef<CameraRef>(null);
   const mapRef = useRef<MapView>(null);
   const mapStyle = mapStore((state) => state.mapStyle);
-  const [recordingState, updateLocation] = recordingStore((state) => [
-    state.recordingState,
-    state.updateLocation,
-  ]);
+  const [recordingState, locations, updateLocation, updateDistance] =
+    recordingStore((state) => [
+      state.recordingState,
+      state.locations,
+      state.updateLocation,
+      state.updateDistance,
+    ]);
   const followUser = trackingStore((state) => state.followUser);
-  // The coordinates for point annotation follow [longitude, latitude]. Longitude is the bigger number (138), latitude is the smaller number (-35).
-
   return (
     <>
       <Mapbox.MapView
@@ -44,7 +50,7 @@ export default function Map() {
         zoomEnabled={true}
         scaleBarEnabled={false}
         scrollEnabled={true}
-        // TODO We need to create sat/topo map in mapbox studio like in WAT app to do a switcher... Using WAT default for now
+        // TODO own sat/topo URLS. not WAT
         styleURL={mapStyle.URL}
       >
         <Camera
@@ -62,15 +68,26 @@ export default function Map() {
           requestsAlwaysUse={true}
           visible={true}
           onUpdate={(location) => {
+            console.log(`loc up`);
             if (recordingState.isRecording) {
               updateLocation(location.coords);
+              if (locations.length === 2) {
+                let coords = transformCoord(locations[0], locations[1]);
+                updateDistance(coords.a, coords.b);
+              } else {
+                let coords = transformCoord(locations[locations.length - 1], {
+                  latitude: location.coords.latitude,
+                  longitude: location.coords.longitude,
+                });
+                updateDistance(coords.a, coords.b);
+              }
             }
           }}
           minDisplacement={0}
         />
         <CurrentShapeSource />
       </Mapbox.MapView>
-      {/* Embedding here may cause too many components to re-render */}
+      {/* TODO Embedding here may cause too many components to re-render */}
       <FocusCurrentPosition />
       <MapStyleButton />
       <StatOverlay />

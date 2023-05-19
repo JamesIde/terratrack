@@ -1,9 +1,7 @@
 import { LineLayer, ShapeSource } from "@rnmapbox/maps";
 import { useEffect } from "react";
-import { View, Text } from "react-native";
 import { lineStyle } from "../../../global/styles/globalLineStyles";
 import { recordingStore } from "../../../stores/recordingStore";
-import { trackingStore } from "../../../stores/trackingStore";
 import { processCoordinates } from "../../../utils/processCoordinates";
 export default function CurrentShapeSource() {
   const [locations, showLine, setShowLine] = recordingStore((state) => [
