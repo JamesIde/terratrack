@@ -74,7 +74,7 @@ export default function Map() {
               if (locations.length === 2) {
                 let coords = transformCoord(locations[0], locations[1]);
                 updateDistance(coords.a, coords.b);
-              } else {
+              } else if (locations.length > 2) {
                 let coords = transformCoord(locations[locations.length - 1], {
                   latitude: location.coords.latitude,
                   longitude: location.coords.longitude,

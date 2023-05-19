@@ -25,7 +25,7 @@ export default function Recording() {
 
   useEffect(() => {
     let interval: NodeJS.Timeout;
-    if (recordingState.isRecording && locations.length > 2) {
+    if (recordingState.isRecording) {
       interval = setInterval(() => {
         const currentTime = Date.now();
         const elapsed = currentTime - startTime + pausedTime;
@@ -61,6 +61,8 @@ export default function Recording() {
     setStartTime(0);
     setPausedTime(0);
     handleRecording(RecordingStateEnum.STOPPED);
+    // TODO: Format track, save in mmkv, show a saving-activity loader.
+    // TODO also - Activity picking modal
   };
 
   const renderIcons = () => {
