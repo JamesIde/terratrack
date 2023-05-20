@@ -28,10 +28,11 @@ export default function Recording() {
     state.handleRecording,
     state.clearCurrentActivity,
   ]);
-  // COMBINE THESE!!! Ugly
-  const [elapsedTime, setElapsedTime] = useState<Date>(new Date(0));
-  const [startTime, setStartTime] = useState<Date>(new Date(0));
-  const [pausedTime, setPausedTime] = useState<number>(0);
+  const [timeData, setTimeData] = useState({
+    elapsedTime: new Date(0),
+    startTime: new Date(0),
+    pausedTime: 0,
+  });
 
   useEffect(() => {
     let interval: NodeJS.Timeout;
@@ -39,35 +40,48 @@ export default function Recording() {
       interval = setInterval(() => {
         const currentTime = new Date();
         const elapsed =
-          currentTime.getTime() - startTime.getTime() + pausedTime;
-        setElapsedTime(new Date(elapsed));
+          currentTime.getTime() -
+          timeData.startTime.getTime() +
+          timeData.pausedTime;
+        setTimeData((prevState) => ({
+          ...prevState,
+          elapsedTime: new Date(elapsed),
+        }));
       }, 1000);
     }
 
     return () => {
       clearInterval(interval);
     };
-  }, [recordingState.isRecording, startTime, pausedTime]);
+  }, [recordingState.isRecording, timeData.startTime, timeData.pausedTime]);
 
   const startRecording = () => {
     const currentTime = new Date();
-    setStartTime(currentTime);
+    setTimeData((prevState) => ({
+      ...prevState,
+      startTime: currentTime,
+    }));
     handleRecording(RecordingStateEnum.RECORDING);
   };
 
   const pauseRecording = () => {
     const currentTime = new Date();
-    setPausedTime(
-      (prevPausedTime) =>
-        prevPausedTime + currentTime.getTime() - startTime.getTime()
-    );
-
+    setTimeData((prevState) => ({
+      ...prevState,
+      pausedTime:
+        prevState.pausedTime +
+        currentTime.getTime() -
+        prevState.startTime.getTime(),
+    }));
     handleRecording(RecordingStateEnum.PAUSED);
   };
 
   const resumeRecording = () => {
     const currentTime = new Date();
-    setStartTime(currentTime);
+    setTimeData((prevState) => ({
+      ...prevState,
+      startTime: currentTime,
+    }));
     handleRecording(RecordingStateEnum.RECORDING);
   };
 
@@ -82,8 +96,8 @@ export default function Recording() {
       type: activityTypeEnum.WALKING,
       coordinates: processCoordinates(locations),
       distance: distance,
-      duration: processTime(elapsedTime.getSeconds()),
-      startTime: processNewDate(startTime),
+      duration: processTime(timeData.elapsedTime.getSeconds()),
+      startTime: processNewDate(timeData.startTime),
       endTime: processNewDate(new Date()),
       metadata: {
         color: getRandomColor(),
@@ -98,10 +112,14 @@ export default function Recording() {
 
   function clearState() {
     handleRecording(RecordingStateEnum.STOPPED);
-    setElapsedTime(new Date(0));
-    setStartTime(new Date(0));
-    setPausedTime(0);
-    // TODO figoure out why this is crashing the app
+    setTimeData((prevState) => ({
+      ...prevState,
+      elapsedTime: new Date(0),
+      startTime: new Date(0),
+      pausedTime: 0,
+    }));
+
+    // TODO figure out why this is crashing the app
     // setTimeout(() => {
     //   clearCurrentActivity();
     // }, 500);
@@ -161,7 +179,7 @@ export default function Recording() {
 
   return (
     <View style={styles.container}>
-      <Text>time: {elapsedTime.getSeconds()} in seconds</Text>
+      <Text>time: {timeData.elapsedTime.getSeconds()} in seconds</Text>
       <Text>locations: {locations.length}</Text>
       <Text>distance: {distance}</Text>
       {renderIcons()}
