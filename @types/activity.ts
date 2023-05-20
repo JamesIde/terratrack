@@ -9,4 +9,5 @@ export interface Activity {
   endTime: string;
   distance: number;
   coordinates: Position[];
+  id: string;
 }

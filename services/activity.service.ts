@@ -3,9 +3,9 @@ import { Activity } from "../@types/activity";
 import uuid from "react-native-uuid";
 import { ShowAlert } from "../utils/alert/alert";
 
-export async function addActivity(activity: Activity) {
+export async function addActivity(activity: Activity, id: string) {
   try {
-    await AsyncStorage.setItem(uuid.v4().toString(), JSON.stringify(activity));
+    await AsyncStorage.setItem(id, JSON.stringify(activity));
   } catch (error) {
     ShowAlert("Error", "There was an error adding the activity", [
       {
@@ -41,4 +41,8 @@ export async function getActivity(key: string) {
 
 export async function deleteActivity(key: string) {
   return await AsyncStorage.removeItem(key);
+}
+
+export async function clearActivities() {
+  return await AsyncStorage.clear();
 }

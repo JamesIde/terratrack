@@ -10,6 +10,7 @@ import { processCoordinates } from "../../utils/transformers/processCoordinates"
 import { processNewDate } from "../../utils/transformers/processDate";
 import { toTime } from "../../utils/transformers/processTime";
 import { addActivity } from "../../services/activity.service";
+import uuid from "react-native-uuid";
 
 // This component is probably doing too much
 export default function Recording() {
@@ -69,10 +70,13 @@ export default function Recording() {
     handleRecording(RecordingStateEnum.RECORDING);
   };
 
-  const stopRecording = async () => {
+  const stopRecording = () => {
     clearState();
     // TODO: show a saving-activity loader.
     // TODO also - Activity picking modal and description
+
+    // Need id as the activity object for key-extractor in flat list. id is also the key in async storage kv
+    let id: string = uuid.v4().toString();
     let currentActivity: Activity = {
       description: "Test walk around the block",
       type: activityTypeEnum.WALKING,
@@ -81,8 +85,9 @@ export default function Recording() {
       duration: toTime(elapsedTime.getSeconds()),
       startTime: processNewDate(startTime),
       endTime: processNewDate(new Date()),
+      id,
     };
-    await addActivity(currentActivity);
+    addActivity(currentActivity, id);
   };
 
   function clearState() {
