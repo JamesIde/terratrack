@@ -6,7 +6,7 @@ import { getActivities, getKeys } from "../../../services/activity.service";
 import { Activity } from "../../../@types/activity";
 import { ShowAlert } from "../../../utils/alert/alert";
 import ActivityItem from "./ActivityItem";
-import ActivitySheetHeader from "./ActivitySheetHeader";
+import ActivitySheetHeaderWrapper from "./ActivitySheetHeaderWrapper";
 export default function ActivitySheet() {
   // Need to read up on useCallback and useMemo too. Been a while and don't fully understand whats happening here.
   const [fetchedData, setFetchedData] = useState<Activity[]>([]);
@@ -42,7 +42,7 @@ export default function ActivitySheet() {
 
   return (
     <BottomSheet snapPoints={snapPoints} onChange={handleSheetChanges}>
-      <ActivitySheetHeader />
+      <ActivitySheetHeaderWrapper />
       <BottomSheetFlatList
         data={data}
         keyExtractor={(i) => i.id}
