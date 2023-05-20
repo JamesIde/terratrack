@@ -10,4 +10,9 @@ export interface Activity {
   distance: number;
   coordinates: Position[];
   id: string;
+  metadata: ActivityMetadata;
+}
+
+interface ActivityMetadata {
+  color: string;
 }

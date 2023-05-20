@@ -20,7 +20,7 @@ const styles = StyleSheet.create({
     backgroundColor: globalColors.primaryGrey,
     padding: 2,
     borderRadius: 7,
-    marginBottom: 15,
+    marginBottom: 25,
   },
   icon: {
     marginTop: 1,

@@ -8,9 +8,10 @@ import { activityTypeEnum } from "../../@types/enum/activityTypeEnum";
 import { Activity } from "../../@types/activity";
 import { processCoordinates } from "../../utils/transformers/processCoordinates";
 import { processNewDate } from "../../utils/transformers/processDate";
-import { toTime } from "../../utils/transformers/processTime";
+import { processTime } from "../../utils/transformers/processTime";
 import { addActivity } from "../../services/activity.service";
 import uuid from "react-native-uuid";
+import { getRandomColor } from "../../utils/misc/getRandomColor";
 
 // This component is probably doing too much
 export default function Recording() {
@@ -70,8 +71,7 @@ export default function Recording() {
     handleRecording(RecordingStateEnum.RECORDING);
   };
 
-  const stopRecording = () => {
-    clearState();
+  const stopRecording = async () => {
     // TODO: show a saving-activity loader.
     // TODO also - Activity picking modal and description
 
@@ -82,20 +82,29 @@ export default function Recording() {
       type: activityTypeEnum.WALKING,
       coordinates: processCoordinates(locations),
       distance: distance,
-      duration: toTime(elapsedTime.getSeconds()),
+      duration: processTime(elapsedTime.getSeconds()),
       startTime: processNewDate(startTime),
       endTime: processNewDate(new Date()),
+      metadata: {
+        color: getRandomColor(),
+      },
       id,
     };
-    addActivity(currentActivity, id);
+    await addActivity(currentActivity, id).then(() => {
+      console.log(`saved`);
+      clearState();
+    });
   };
 
   function clearState() {
-    clearCurrentActivity();
     handleRecording(RecordingStateEnum.STOPPED);
     setElapsedTime(new Date(0));
     setStartTime(new Date(0));
     setPausedTime(0);
+    // TODO figoure out why this is crashing the app
+    // setTimeout(() => {
+    //   clearCurrentActivity();
+    // }, 500);
   }
 
   const renderIcons = () => {

@@ -57,9 +57,6 @@ export default function ActivitySheet() {
 }
 
 export const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-  },
   flatList: {
     marginBottom: Dimensions.get("window").height * 0.01,
   },

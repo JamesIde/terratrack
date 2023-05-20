@@ -10,7 +10,7 @@ export default function ActivitySheetHeader() {
 export const styles = StyleSheet.create({
   header: {
     fontWeight: "bold",
-    fontSize: 26,
+    fontSize: 30,
     marginBottom: 3,
   },
 });
