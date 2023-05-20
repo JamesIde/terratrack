@@ -69,7 +69,7 @@ export default function Recording() {
     handleRecording(RecordingStateEnum.RECORDING);
   };
 
-  const stopRecording = () => {
+  const stopRecording = async () => {
     clearState();
     // TODO: show a saving-activity loader.
     // TODO also - Activity picking modal and description
@@ -82,7 +82,7 @@ export default function Recording() {
       startTime: processNewDate(startTime),
       endTime: processNewDate(new Date()),
     };
-    addActivity(currentActivity);
+    await addActivity(currentActivity);
   };
 
   function clearState() {
