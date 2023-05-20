@@ -3,6 +3,7 @@ import BottomSheet, { BottomSheetFlatList } from "@gorhom/bottom-sheet";
 import { useMemo, useCallback } from "react";
 import { styles } from "../mapbox/Map";
 import { Dimensions } from "react-native";
+import { getKeys } from "../../../services/activity.service";
 export default function Activity() {
   const data = useMemo(
     () =>
@@ -20,6 +21,11 @@ export default function Activity() {
     ),
     []
   );
+
+  const handleRefresh = useCallback(async () => {
+    console.log(await getKeys());
+  }, []);
+
   return (
     <BottomSheet snapPoints={snapPoints}>
       <BottomSheetFlatList
@@ -27,6 +33,8 @@ export default function Activity() {
         keyExtractor={(i) => i}
         renderItem={renderItem}
         contentContainerStyle={styles.contentContainer}
+        refreshing={false}
+        onRefresh={handleRefresh}
         style={{
           marginBottom: Dimensions.get("window").height * 0.01,
           marginTop: Dimensions.get("window").height * 0.04,
