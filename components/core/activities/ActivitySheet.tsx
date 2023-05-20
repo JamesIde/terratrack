@@ -6,6 +6,7 @@ import { getActivities, getKeys } from "../../../services/activity.service";
 import { Activity } from "../../../@types/activity";
 import { ShowAlert } from "../../../utils/alert/alert";
 import ActivityItem from "./ActivityItem";
+import ActivitySheetHeader from "./ActivitySheetHeader";
 export default function ActivitySheet() {
   // Need to read up on useCallback and useMemo too. Been a while and don't fully understand whats happening here.
   const [fetchedData, setFetchedData] = useState<Activity[]>([]);
@@ -22,7 +23,7 @@ export default function ActivitySheet() {
   useEffect(() => {
     fetchData();
     console.log(`use eff re-render`);
-  }, [getActivities]);
+  }, []);
 
   const data = useMemo(() => {
     return fetchedData.map((item) => item);
@@ -41,6 +42,7 @@ export default function ActivitySheet() {
 
   return (
     <BottomSheet snapPoints={snapPoints} onChange={handleSheetChanges}>
+      <ActivitySheetHeader />
       <BottomSheetFlatList
         data={data}
         keyExtractor={(i) => i.id}
@@ -60,6 +62,5 @@ export const styles = StyleSheet.create({
   },
   flatList: {
     marginBottom: Dimensions.get("window").height * 0.01,
-    marginTop: Dimensions.get("window").height * 0.04,
   },
 });
