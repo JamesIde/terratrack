@@ -2,7 +2,7 @@ import { LineLayer, ShapeSource } from "@rnmapbox/maps";
 import { useEffect } from "react";
 import { lineStyle } from "../../../global/styles/globalLineStyles";
 import { recordingStore } from "../../../stores/recordingStore";
-import { processCoordinates } from "../../../utils/processCoordinates";
+import { processCoordinates } from "../../../utils/transformers/processCoordinates";
 export default function CurrentShapeSource() {
   const [locations, showLine, setShowLine] = recordingStore((state) => [
     state.locations,

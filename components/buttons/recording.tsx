@@ -5,31 +5,40 @@ import { recordingStore } from "../../stores/recordingStore";
 import { RecordingStateEnum } from "../../@types/enum/recordingStateEnum";
 import { useEffect, useState } from "react";
 import { activityTypeEnum } from "../../@types/enum/activityTypeEnum";
+import { Activity } from "../../@types/activity";
+import { processCoordinates } from "../../utils/transformers/processCoordinates";
+import { processNewDate } from "../../utils/transformers/processDate";
+import { toTime } from "../../utils/transformers/processTime";
+import { addActivity } from "../../services/activity.service";
 
+// This component is probably doing too much
 export default function Recording() {
-  const [locations, distance, recordingState, handleRecording] = recordingStore(
-    (state) => [
-      state.locations,
-      state.distance,
-      state.recordingState,
-      state.handleRecording,
-    ]
-  );
+  const [
+    locations,
+    distance,
+    recordingState,
+    handleRecording,
+    clearCurrentActivity,
+  ] = recordingStore((state) => [
+    state.locations,
+    state.distance,
+    state.recordingState,
+    state.handleRecording,
+    state.clearCurrentActivity,
+  ]);
   // COMBINE THESE!!! Ugly
-  const [elapsedTime, setElapsedTime] = useState<number>(0);
-  const [startTime, setStartTime] = useState<number>(0);
+  const [elapsedTime, setElapsedTime] = useState<Date>(new Date(0));
+  const [startTime, setStartTime] = useState<Date>(new Date(0));
   const [pausedTime, setPausedTime] = useState<number>(0);
-
-  // This will come from a modal at some point
-  let activity = activityTypeEnum.WALKING;
 
   useEffect(() => {
     let interval: NodeJS.Timeout;
     if (recordingState.isRecording) {
       interval = setInterval(() => {
-        const currentTime = Date.now();
-        const elapsed = currentTime - startTime + pausedTime;
-        setElapsedTime(elapsed);
+        const currentTime = new Date();
+        const elapsed =
+          currentTime.getTime() - startTime.getTime() + pausedTime;
+        setElapsedTime(new Date(elapsed));
       }, 1000);
     }
 
@@ -39,31 +48,50 @@ export default function Recording() {
   }, [recordingState.isRecording, startTime, pausedTime]);
 
   const startRecording = () => {
-    const currentTime = Date.now();
+    const currentTime = new Date();
     setStartTime(currentTime);
     handleRecording(RecordingStateEnum.RECORDING);
   };
 
   const pauseRecording = () => {
-    const currentTime = Date.now();
-    setPausedTime((prevPausedTime) => prevPausedTime + currentTime - startTime);
+    const currentTime = new Date();
+    setPausedTime(
+      (prevPausedTime) =>
+        prevPausedTime + currentTime.getTime() - startTime.getTime()
+    );
+
     handleRecording(RecordingStateEnum.PAUSED);
   };
 
   const resumeRecording = () => {
-    const currentTime = Date.now();
+    const currentTime = new Date();
     setStartTime(currentTime);
     handleRecording(RecordingStateEnum.RECORDING);
   };
 
   const stopRecording = () => {
-    setElapsedTime(0);
-    setStartTime(0);
-    setPausedTime(0);
-    handleRecording(RecordingStateEnum.STOPPED);
-    // TODO: Format track, save in mmkv, show a saving-activity loader.
-    // TODO also - Activity picking modal
+    clearState();
+    // TODO: show a saving-activity loader.
+    // TODO also - Activity picking modal and description
+    let currentActivity: Activity = {
+      description: "Test walk around the block",
+      type: activityTypeEnum.WALKING,
+      coordinates: processCoordinates(locations),
+      distance: distance,
+      duration: toTime(elapsedTime.getSeconds()),
+      startTime: processNewDate(startTime),
+      endTime: processNewDate(new Date()),
+    };
+    addActivity(currentActivity);
   };
+
+  function clearState() {
+    clearCurrentActivity();
+    handleRecording(RecordingStateEnum.STOPPED);
+    setElapsedTime(new Date(0));
+    setStartTime(new Date(0));
+    setPausedTime(0);
+  }
 
   const renderIcons = () => {
     if (recordingState.isRecording) {
@@ -119,7 +147,7 @@ export default function Recording() {
 
   return (
     <View style={styles.container}>
-      <Text>time: {elapsedTime} in miliseconds</Text>
+      <Text>time: {elapsedTime.getSeconds()} in seconds</Text>
       <Text>locations: {locations.length}</Text>
       <Text>distance: {distance}</Text>
       {renderIcons()}

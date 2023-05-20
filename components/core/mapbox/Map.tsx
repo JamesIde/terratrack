@@ -16,7 +16,7 @@ import StatOverlay from "../overlay/statOverlay";
 import FocusCurrentPosition from "../../buttons/FocusCurrentPosition";
 import MapStyleButton from "../../buttons/MapStyle";
 import CurrentShapeSource from "./CurrentShapeSource";
-import { transformCoord } from "../../../utils/processCoord";
+import { transformCoord } from "../../../utils/transformers/processCoord";
 /**
  * We don't want to manipulate the mapbox location object if we can avoid it.
  * If we do, have a util method that does that. Don't want to lose track over the app

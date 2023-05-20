@@ -1,12 +1,18 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { Activity } from "../@types/activity";
 import uuid from "react-native-uuid";
+import { ShowAlert } from "../utils/alert/alert";
 
 export async function addActivity(activity: Activity) {
-  return await AsyncStorage.setItem(
-    uuid.v4().toString(),
-    JSON.stringify(activity)
-  );
+  try {
+    await AsyncStorage.setItem(uuid.v4().toString(), JSON.stringify(activity));
+  } catch (error) {
+    ShowAlert("Error", "There was an error adding the activity", [
+      {
+        text: "OK",
+      },
+    ]);
+  }
 }
 
 export async function getKeys() {

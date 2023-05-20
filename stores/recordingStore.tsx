@@ -1,7 +1,7 @@
 import { create } from "zustand";
 import { RecordingStateEnum } from "../@types/enum/recordingStateEnum";
 import { Coordinate } from "../@types/coordinates";
-import { haversineDistance } from "../lib/haversineDistance";
+import { haversineDistance } from "../utils/algo/haversineDistance";
 import { HCoord } from "../@types/haversineCoords";
 import { activityTypeEnum } from "../@types/enum/activityTypeEnum";
 export const recordingStore = create<{
@@ -18,6 +18,7 @@ export const recordingStore = create<{
   updateLocation: (location: Coordinate) => void;
   updateDistance: (coord1: HCoord, coord2: HCoord) => void;
   setShowLine: (show: boolean) => void;
+  clearCurrentActivity: () => void;
 }>((set) => ({
   locations: [],
   distance: 0,
@@ -76,6 +77,13 @@ export const recordingStore = create<{
     set((state) => ({
       ...state,
       distance: state.distance + haversineDistance(coord1, coord2),
+    }));
+  },
+  clearCurrentActivity: () => {
+    set((state) => ({
+      ...state,
+      distance: 0,
+      locations: [],
     }));
   },
 }));
