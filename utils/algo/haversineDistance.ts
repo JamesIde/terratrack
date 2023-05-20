@@ -1,4 +1,4 @@
-import { HCoord } from "../@types/haversineCoords";
+import { HCoord } from "../../@types/haversineCoords";
 
 /**
  * A function that calculates the distance between two points on a sphere taking into account the earth

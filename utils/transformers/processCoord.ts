@@ -1,5 +1,5 @@
-import { Coordinate } from "../@types/coordinates";
-import { HCoord } from "../@types/haversineCoords";
+import { Coordinate } from "../../@types/coordinates";
+import { HCoord } from "../../@types/haversineCoords";
 
 /**
  * Transform the Mapbox location object into a h-coord for distance calculations
