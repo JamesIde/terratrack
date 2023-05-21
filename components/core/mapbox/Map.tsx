@@ -1,5 +1,5 @@
 import { Dimensions, StyleSheet } from "react-native";
-import React, { useRef } from "react";
+import React, { useEffect, useMemo, useRef } from "react";
 import Mapbox, {
   Camera,
   MapView,
@@ -11,12 +11,16 @@ import { CameraRef } from "@rnmapbox/maps/lib/typescript/components/Camera";
 import { mapStore } from "../../../stores/mapStore";
 import { trackingStore } from "../../../stores/trackingStore";
 import { recordingStore } from "../../../stores/recordingStore";
+import { transformCoord } from "../../../utils/transformers/processCoord";
+import { activityStore } from "../../../stores/activityStore";
+import { Position } from "@rnmapbox/maps/lib/typescript/types/Position";
+import * as Turf from "@turf/turf";
+import SelectedShapeSource from "./SelectedShapeSource";
 import Recording from "../../buttons/Recording";
 import StatOverlay from "../overlay/statOverlay";
 import FocusCurrentPosition from "../../buttons/FocusCurrentPosition";
 import MapStyleButton from "../../buttons/MapStyle";
 import CurrentShapeSource from "./CurrentShapeSource";
-import { transformCoord } from "../../../utils/transformers/processCoord";
 /**
  * We don't want to manipulate the mapbox location object if we can avoid it.
  * If we do, have a util method that does that. Don't want to lose track over the app
@@ -42,11 +46,32 @@ export default function Map() {
     state.updateDistance,
     state.updateElevation,
   ]);
-  const followUser = trackingStore((state) => state.followUser);
+  const [followUser, setFollowUser] = trackingStore((state) => [
+    state.followUser,
+    state.setFollowUser,
+  ]);
+  const selectedActivity = activityStore((state) => state.selectedActivity);
+
+  const snapToActivity = () => {
+    let ne: Position = [0, 0];
+    let sw: Position = [0, 0];
+    if (selectedActivity) {
+      let coords = Turf.lineString(selectedActivity.coordinates);
+      let bbox = Turf.bbox(coords);
+      ne = [bbox[2], bbox[3]];
+      sw = [bbox[0], bbox[1]];
+    }
+
+    return cameraRef.current?.fitBounds(ne, sw, 100, 100);
+  };
+
+  useEffect(() => {
+    snapToActivity();
+  }, [selectedActivity]);
   return (
     <>
       <Mapbox.MapView
-        style={styles.map}
+        style={[styles.map, { height: "100%" }]}
         compassEnabled
         compassPosition={{
           top: Dimensions.get("window").height * 0.04,
@@ -73,7 +98,6 @@ export default function Map() {
           requestsAlwaysUse={true}
           visible={true}
           onUpdate={(location) => {
-            console.log(`${JSON.stringify(location.coords)}`);
             if (recordingState.isRecording) {
               updateLocation(location.coords);
               if (locations.length === 2) {
@@ -97,12 +121,14 @@ export default function Map() {
           minDisplacement={0} // TODO this could be dynamic based on activityType.
         />
         <CurrentShapeSource />
+        <SelectedShapeSource />
       </Mapbox.MapView>
-      {/* TODO Embedding here may cause too many components to re-render */}
-      <FocusCurrentPosition />
-      <MapStyleButton />
-      <StatOverlay />
-      <Recording />
+      <>
+        <FocusCurrentPosition />
+        <MapStyleButton />
+        <StatOverlay />
+        <Recording />
+      </>
     </>
   );
 }
@@ -113,7 +139,6 @@ export const styles = StyleSheet.create({
   },
   map: {
     width: "100%",
-    height: "100%",
     marginBottom: "auto",
   },
   contentContainer: {

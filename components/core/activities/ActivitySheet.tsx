@@ -1,15 +1,15 @@
-import { View, Text, StyleSheet } from "react-native";
+import { Text, StyleSheet } from "react-native";
 import BottomSheet, { BottomSheetFlatList } from "@gorhom/bottom-sheet";
 import { useMemo, useCallback, useState, useEffect, useRef } from "react";
 import { Dimensions } from "react-native";
-import { getActivities, getKeys } from "../../../services/activity.service";
+import { getActivities } from "../../../services/activity.service";
 import { Activity } from "../../../@types/activity";
 import { ShowAlert } from "../../../utils/alert/alert";
 import ActivityItem from "./ActivityItem";
 import ActivitySheetHeaderWrapper from "./ActivitySheetHeaderWrapper";
-import { useSharedValue } from "react-native-reanimated";
 import SelectedActivity from "./SelectedActivity";
 import { activityStore } from "../../../stores/activityStore";
+import { trackingStore } from "../../../stores/trackingStore";
 export default function ActivitySheet() {
   // Need to read up on useCallback and useMemo too. Been a while and don't fully understand whats happening here.
   const sheetRef = useRef<BottomSheet>(null);
@@ -18,6 +18,7 @@ export default function ActivitySheet() {
     state.selectedActivity,
     state.setSelectedActivity,
   ]);
+  const setFollowUser = trackingStore((state) => state.setFollowUser);
   const fetchData = useCallback(async () => {
     try {
       const activities = await getActivities();
@@ -43,8 +44,11 @@ export default function ActivitySheet() {
   const snapPoints = useMemo(() => ["5%", "50%", "80%"], []);
 
   const handleSheetChanges = useCallback((index: number) => {
+    // Closed sheet
     if (index === 0) {
+      setFollowUser(true);
       setSelectedActivity(null);
+      // Repeats here because the sheet is not updating the state in time
     }
     fetchData();
   }, []);
@@ -52,11 +56,15 @@ export default function ActivitySheet() {
   const onActivityClick = (activity: Activity) => {
     sheetRef.current?.snapToIndex(1); // 50%
     setSelectedActivity(activity);
+    // Camera won't follow user, Map.tsx ref sets bounds to the Turf bbox
+    setFollowUser(false);
   };
 
   const deselectActivity = () => {
     sheetRef.current?.snapToIndex(2); // 80%
     setSelectedActivity(null);
+    // Returns camera view to user location
+    setFollowUser(true);
   };
 
   return (

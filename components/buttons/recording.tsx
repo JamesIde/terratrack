@@ -94,6 +94,7 @@ export default function Recording() {
       type: preActivityForm.activityType,
       coordinates: processCoordinates(locations),
       distance: distance,
+      // TODO fix this function. Not returning time correctly
       duration: processTime(timeData.elapsedTime.getSeconds()),
       startTime: processNewDate(timeData.startTime),
       endTime: processNewDate(new Date()),
@@ -201,7 +202,7 @@ export default function Recording() {
         closeModal={closeModal}
       />
       <View style={styles.container}>
-        <Text>time: {timeData.elapsedTime.getSeconds()} in seconds</Text>
+        <Text>time: {timeData.elapsedTime.getTime()} in seconds</Text>
         <Text>locations: {locations.length}</Text>
         <Text>distance: {distance}</Text>
         {renderIcons()}
