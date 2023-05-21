@@ -3,6 +3,7 @@ import { useEffect } from "react";
 import { lineStyle } from "../../../global/styles/globalLineStyles";
 import { recordingStore } from "../../../stores/recordingStore";
 import { processCoordinates } from "../../../utils/transformers/processCoordinates";
+import uuid from "react-native-uuid";
 export default function CurrentShapeSource() {
   const [locations, showLine, setShowLine] = recordingStore((state) => [
     state.locations,
@@ -20,7 +21,7 @@ export default function CurrentShapeSource() {
     <>
       {showLine && (
         <ShapeSource
-          id="source1"
+          id={uuid.v4().toString()}
           lineMetrics={true}
           shape={{
             type: "Feature",

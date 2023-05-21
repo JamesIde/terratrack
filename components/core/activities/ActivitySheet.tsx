@@ -46,9 +46,9 @@ export default function ActivitySheet() {
   const handleSheetChanges = useCallback((index: number) => {
     // Closed sheet
     if (index === 0) {
+      // Repeats here because the sheet is not updating the state in time
       setFollowUser(true);
       setSelectedActivity(null);
-      // Repeats here because the sheet is not updating the state in time
     }
     fetchData();
   }, []);
@@ -72,7 +72,6 @@ export default function ActivitySheet() {
       snapPoints={snapPoints}
       onChange={handleSheetChanges}
       ref={sheetRef}
-      // Get the height of the bottom sheet
     >
       {!selectedActivity ? (
         <>
@@ -90,13 +89,7 @@ export default function ActivitySheet() {
               style={styles.flatList}
             />
           ) : (
-            <Text
-              style={{
-                textAlign: "center",
-              }}
-            >
-              No activities found
-            </Text>
+            <Text style={styles.activityText}>No activities found</Text>
           )}
         </>
       ) : (
@@ -112,5 +105,8 @@ export default function ActivitySheet() {
 export const styles = StyleSheet.create({
   flatList: {
     marginBottom: Dimensions.get("window").height * 0.01,
+  },
+  activityText: {
+    textAlign: "center",
   },
 });

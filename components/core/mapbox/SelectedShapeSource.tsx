@@ -18,12 +18,12 @@ export default function SelectedShapeSource() {
           }}
         >
           <LineLayer
-            id="layer1"
+            id={selectedActivity.id}
             style={{
               lineColor: selectedActivity.metadata.color,
               lineJoin: "round",
               lineCap: "round",
-              lineWidth: 3,
+              lineWidth: 5,
             }}
           />
         </ShapeSource>

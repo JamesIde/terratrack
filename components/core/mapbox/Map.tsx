@@ -52,7 +52,7 @@ export default function Map() {
   ]);
   const selectedActivity = activityStore((state) => state.selectedActivity);
 
-  const snapToActivity = () => {
+  const zoomToActivity = () => {
     let ne: Position = [0, 0];
     let sw: Position = [0, 0];
     if (selectedActivity) {
@@ -66,7 +66,7 @@ export default function Map() {
   };
 
   useEffect(() => {
-    snapToActivity();
+    zoomToActivity();
   }, [selectedActivity]);
   return (
     <>
