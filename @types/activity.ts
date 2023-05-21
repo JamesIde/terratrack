@@ -14,7 +14,7 @@ export interface Activity {
   coordinates: Position[];
   id: string;
   metadata: ActivityMetadata;
-  elevation?: elevationMetadata;
+  elevation: elevationMetadata;
 }
 
 export interface elevationMetadata {
