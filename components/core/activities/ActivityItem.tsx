@@ -4,8 +4,13 @@ import { globalColors } from "../../../global/styles/globalColors";
 import { processDistance } from "../../../utils/transformers/processDistance";
 import { Ionicons } from "@expo/vector-icons";
 
-export default function ActivityItem({ activity }: { activity: Activity }) {
-  // 26 chars is all we want
+export default function ActivityItem({
+  activity,
+  onSelection,
+}: {
+  activity: Activity;
+  onSelection: (activity: Activity) => void;
+}) {
   return (
     <Pressable
       key={activity.id}
@@ -13,6 +18,7 @@ export default function ActivityItem({ activity }: { activity: Activity }) {
         color: "rgba(0, 0, 0, .1)",
       }}
       style={({ pressed }) => [pressed ? styles.pressed : null]}
+      onPress={() => onSelection(activity)}
     >
       <View style={styles.container}>
         <View style={styles.contentWrapper}>

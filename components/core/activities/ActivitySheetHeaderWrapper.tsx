@@ -1,8 +1,6 @@
-import { View, Text, StyleSheet } from "react-native";
-import { FontAwesome } from "@expo/vector-icons";
-import { globalColors } from "../../../global/styles/globalColors";
+import { View, StyleSheet } from "react-native";
 import ActivitySearchBar from "./ActivitySearchBar";
-import ActivitySortButton from "./ActivitySortButton";
+import ActivitySortButton from "../../buttons/ActivitySortButton";
 import ActivitySheetHeader from "./ActivitySheetHeader";
 export default function ActivitySheetHeaderWrapper() {
   return (
