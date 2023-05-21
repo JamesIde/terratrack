@@ -17,21 +17,14 @@ import { processElevation } from "../../utils/transformers/processElevation";
 
 // This component is probably doing too much
 export default function Recording() {
-  const [
-    locations,
-    elevationArr,
-    distance,
-    recordingState,
-    handleRecording,
-    clearCurrentActivity,
-  ] = recordingStore((state) => [
-    state.locations,
-    state.elevationArr,
-    state.distance,
-    state.recordingState,
-    state.handleRecording,
-    state.clearCurrentActivity,
-  ]);
+  const [locations, elevationArr, distance, recordingState, handleRecording] =
+    recordingStore((state) => [
+      state.locations,
+      state.elevationArr,
+      state.distance,
+      state.recordingState,
+      state.handleRecording,
+    ]);
   const [timeData, setTimeData] = useState({
     elapsedTime: new Date(0),
     startTime: new Date(0),
@@ -123,10 +116,11 @@ export default function Recording() {
       startTime: new Date(0),
       pausedTime: 0,
     }));
+    console.log(`LOC ${locations.length}`);
 
     // TODO figure out why this is crashing the app
     // setTimeout(() => {
-    //   clearCurrentActivity();
+    // clearCurrentActivity();
     // }, 500);
   }
 

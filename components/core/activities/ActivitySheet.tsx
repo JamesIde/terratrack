@@ -45,21 +45,13 @@ export default function ActivitySheet() {
     fetchData();
   }, []);
 
-  const handleRefresh = useCallback(async () => {
-    console.log(await getKeys());
-  }, []);
-
-  const handleSnapPress = useCallback((index: number) => {
-    sheetRef.current?.snapToIndex(index);
-  }, []);
-
   const selectedActivity = (activity: Activity) => {
-    handleSnapPress(1); // 50%
+    sheetRef.current?.snapToIndex(1); // 50%
     setActivity(activity);
   };
 
   const deselectActivity = () => {
-    handleSnapPress(2); // 80%
+    sheetRef.current?.snapToIndex(2); // 80%
     setActivity(null);
   };
 
@@ -80,8 +72,6 @@ export default function ActivitySheet() {
               renderItem={({ item }) => (
                 <ActivityItem activity={item} onSelection={selectedActivity} />
               )}
-              refreshing={false}
-              onRefresh={handleRefresh}
               style={styles.flatList}
             />
           ) : (

@@ -20,7 +20,6 @@ export const recordingStore = create<{
   updateElevation: (elevation: number) => void;
   updateDistance: (coord1: HCoord, coord2: HCoord) => void;
   setShowLine: (show: boolean) => void;
-  clearCurrentActivity: () => void;
 }>((set) => ({
   locations: [],
   elevationArr: [],
@@ -60,6 +59,9 @@ export const recordingStore = create<{
             isRecording: false,
             isPaused: false,
           },
+          distance: 0,
+          locations: [],
+          showLine: false,
         }));
         break;
       default:
@@ -85,13 +87,6 @@ export const recordingStore = create<{
     set((state) => ({
       ...state,
       distance: state.distance + haversineDistance(coord1, coord2),
-    }));
-  },
-  clearCurrentActivity: () => {
-    set((state) => ({
-      ...state,
-      distance: 0,
-      locations: [],
     }));
   },
 }));

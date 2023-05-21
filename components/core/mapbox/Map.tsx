@@ -77,9 +77,11 @@ export default function Map() {
             if (recordingState.isRecording) {
               updateLocation(location.coords);
               if (locations.length === 2) {
+                // get first two coords in the arr
                 let coords = transformCoord(locations[0], locations[1]);
                 updateDistance(coords.a, coords.b);
               } else if (locations.length > 2) {
+                // get the last known coord plus latest coord from location update
                 let coords = transformCoord(locations[locations.length - 1], {
                   latitude: location.coords.latitude,
                   longitude: location.coords.longitude,
@@ -92,7 +94,7 @@ export default function Map() {
               }
             }
           }}
-          minDisplacement={0}
+          minDisplacement={0} // TODO this could be dynamic based on activityType.
         />
         <CurrentShapeSource />
       </Mapbox.MapView>
