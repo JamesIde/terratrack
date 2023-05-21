@@ -5,13 +5,14 @@ import { recordingStore } from "../../stores/recordingStore";
 import { RecordingStateEnum } from "../../@types/enum/recordingStateEnum";
 import { useEffect, useState } from "react";
 import { activityTypeEnum } from "../../@types/enum/activityTypeEnum";
-import { Activity } from "../../@types/activity";
+import { Activity, PreActivity } from "../../@types/activity";
 import { processCoordinates } from "../../utils/transformers/processCoordinates";
 import { processNewDate } from "../../utils/transformers/processDate";
 import { processTime } from "../../utils/transformers/processTime";
 import { addActivity } from "../../services/activity.service";
 import uuid from "react-native-uuid";
 import { getRandomColor } from "../../utils/misc/getRandomColor";
+import BeforeYouStardActivityModal from "../modals/BeforeYouStartModal";
 
 // This component is probably doing too much
 export default function Recording() {
@@ -33,6 +34,13 @@ export default function Recording() {
     startTime: new Date(0),
     pausedTime: 0,
   });
+
+  const [preActivityForm, setPreActivityForm] = useState({
+    activityType: "",
+    description: "",
+  });
+
+  const [modalVisible, setModalVisible] = useState(false);
 
   useEffect(() => {
     let interval: NodeJS.Timeout;
@@ -56,12 +64,7 @@ export default function Recording() {
   }, [recordingState.isRecording, timeData.startTime, timeData.pausedTime]);
 
   const startRecording = () => {
-    const currentTime = new Date();
-    setTimeData((prevState) => ({
-      ...prevState,
-      startTime: currentTime,
-    }));
-    handleRecording(RecordingStateEnum.RECORDING);
+    setModalVisible(true);
   };
 
   const pauseRecording = () => {
@@ -87,13 +90,12 @@ export default function Recording() {
 
   const stopRecording = async () => {
     // TODO: show a saving-activity loader.
-    // TODO also - Activity picking modal and description
 
     // Need id as the activity object for key-extractor in flat list. id is also the key in async storage kv
     let id: string = uuid.v4().toString();
     let currentActivity: Activity = {
-      description: "Test walk around the block",
-      type: activityTypeEnum.WALKING,
+      description: preActivityForm.description,
+      type: preActivityForm.activityType,
       coordinates: processCoordinates(locations),
       distance: distance,
       duration: processTime(timeData.elapsedTime.getSeconds()),
@@ -105,7 +107,6 @@ export default function Recording() {
       id,
     };
     await addActivity(currentActivity, id).then(() => {
-      console.log(`saved`);
       clearState();
     });
   };
@@ -123,6 +124,22 @@ export default function Recording() {
     // setTimeout(() => {
     //   clearCurrentActivity();
     // }, 500);
+  }
+
+  // This triggers the actual recording of the data when the modal form submits
+  function closeModal(preActivityData: PreActivity) {
+    setPreActivityForm({
+      activityType: preActivityData.activityType!,
+      description: preActivityData.description!,
+    });
+    const currentTime = new Date();
+    setTimeData((prevState) => ({
+      ...prevState,
+      startTime: currentTime,
+    }));
+    handleRecording(RecordingStateEnum.RECORDING);
+    // Close it anyway (could be a cancel + undefined passed in as 'close')
+    setModalVisible(false);
   }
 
   const renderIcons = () => {
@@ -178,12 +195,18 @@ export default function Recording() {
   };
 
   return (
-    <View style={styles.container}>
-      <Text>time: {timeData.elapsedTime.getSeconds()} in seconds</Text>
-      <Text>locations: {locations.length}</Text>
-      <Text>distance: {distance}</Text>
-      {renderIcons()}
-    </View>
+    <>
+      <BeforeYouStardActivityModal
+        modalVisible={modalVisible}
+        closeModal={closeModal}
+      />
+      <View style={styles.container}>
+        <Text>time: {timeData.elapsedTime.getSeconds()} in seconds</Text>
+        <Text>locations: {locations.length}</Text>
+        <Text>distance: {distance}</Text>
+        {renderIcons()}
+      </View>
+    </>
   );
 }
 

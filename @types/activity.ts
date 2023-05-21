@@ -1,4 +1,3 @@
-import { activityTypeEnum } from "./enum/activityTypeEnum";
 import { Position } from "@rnmapbox/maps/lib/typescript/types/Position";
 
 export interface Activity {
@@ -15,4 +14,9 @@ export interface Activity {
 
 interface ActivityMetadata {
   color: string;
+}
+
+export interface PreActivity {
+  description: string | undefined;
+  activityType: string | undefined;
 }
