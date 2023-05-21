@@ -6,10 +6,10 @@ import { Ionicons } from "@expo/vector-icons";
 
 export default function ActivityItem({
   activity,
-  onSelection,
+  onActivityClick,
 }: {
   activity: Activity;
-  onSelection: (activity: Activity) => void;
+  onActivityClick: (activity: Activity) => void;
 }) {
   return (
     <Pressable
@@ -18,7 +18,7 @@ export default function ActivityItem({
         color: "rgba(0, 0, 0, .1)",
       }}
       style={({ pressed }) => [pressed ? styles.pressed : null]}
-      onPress={() => onSelection(activity)}
+      onPress={() => onActivityClick(activity)}
     >
       <View style={styles.container}>
         <View style={styles.contentWrapper}>

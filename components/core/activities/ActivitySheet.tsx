@@ -9,13 +9,15 @@ import ActivityItem from "./ActivityItem";
 import ActivitySheetHeaderWrapper from "./ActivitySheetHeaderWrapper";
 import { useSharedValue } from "react-native-reanimated";
 import SelectedActivity from "./SelectedActivity";
+import { activityStore } from "../../../stores/activityStore";
 export default function ActivitySheet() {
   // Need to read up on useCallback and useMemo too. Been a while and don't fully understand whats happening here.
   const sheetRef = useRef<BottomSheet>(null);
-  const animatedIndex = useSharedValue(0);
   const [fetchedData, setFetchedData] = useState<Activity[]>([]);
-  const [activity, setActivity] = useState<Activity | null>(null);
-
+  const [selectedActivity, setSelectedActivity] = activityStore((state) => [
+    state.selectedActivity,
+    state.setSelectedActivity,
+  ]);
   const fetchData = useCallback(async () => {
     try {
       const activities = await getActivities();
@@ -41,28 +43,30 @@ export default function ActivitySheet() {
   const snapPoints = useMemo(() => ["5%", "50%", "80%"], []);
 
   const handleSheetChanges = useCallback((index: number) => {
-    console.log("sheet changed, fetching");
+    if (index === 0) {
+      setSelectedActivity(null);
+    }
     fetchData();
   }, []);
 
-  const selectedActivity = (activity: Activity) => {
+  const onActivityClick = (activity: Activity) => {
     sheetRef.current?.snapToIndex(1); // 50%
-    setActivity(activity);
+    setSelectedActivity(activity);
   };
 
   const deselectActivity = () => {
     sheetRef.current?.snapToIndex(2); // 80%
-    setActivity(null);
+    setSelectedActivity(null);
   };
 
   return (
     <BottomSheet
       snapPoints={snapPoints}
       onChange={handleSheetChanges}
-      animatedIndex={animatedIndex}
       ref={sheetRef}
+      // Get the height of the bottom sheet
     >
-      {!activity ? (
+      {!selectedActivity ? (
         <>
           <ActivitySheetHeaderWrapper />
           {data.length > 0 ? (
@@ -70,7 +74,10 @@ export default function ActivitySheet() {
               data={data}
               keyExtractor={(i) => i.id}
               renderItem={({ item }) => (
-                <ActivityItem activity={item} onSelection={selectedActivity} />
+                <ActivityItem
+                  activity={item}
+                  onActivityClick={onActivityClick}
+                />
               )}
               style={styles.flatList}
             />
@@ -86,7 +93,7 @@ export default function ActivitySheet() {
         </>
       ) : (
         <SelectedActivity
-          activity={activity}
+          activity={selectedActivity}
           deselectActivity={deselectActivity}
         />
       )}
