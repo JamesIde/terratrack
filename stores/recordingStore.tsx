@@ -6,6 +6,7 @@ import { HCoord } from "../@types/haversineCoords";
 import { activityTypeEnum } from "../@types/enum/activityTypeEnum";
 export const recordingStore = create<{
   locations: Array<Coordinate>;
+  elevationArr: Array<number>;
   distance: number;
   currentActivity: string;
   showLine: boolean;
@@ -16,11 +17,13 @@ export const recordingStore = create<{
   };
   handleRecording: (action: RecordingStateEnum) => void;
   updateLocation: (location: Coordinate) => void;
+  updateElevation: (elevation: number) => void;
   updateDistance: (coord1: HCoord, coord2: HCoord) => void;
   setShowLine: (show: boolean) => void;
   clearCurrentActivity: () => void;
 }>((set) => ({
   locations: [],
+  elevationArr: [],
   distance: 0,
   currentActivity: activityTypeEnum.WALKING,
   showLine: false,
@@ -66,6 +69,11 @@ export const recordingStore = create<{
   updateLocation: (location: any) => {
     set((state) => ({
       locations: [...state.locations, location],
+    }));
+  },
+  updateElevation: (elevation: number) => {
+    set((state) => ({
+      elevationArr: [...state.elevationArr, elevation],
     }));
   },
   setShowLine: (show: boolean) => {

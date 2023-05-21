@@ -1,4 +1,8 @@
 import { Position } from "@rnmapbox/maps/lib/typescript/types/Position";
+export interface PreActivity {
+  description: string | undefined;
+  activityType: string | undefined;
+}
 
 export interface Activity {
   description: string;
@@ -10,13 +14,16 @@ export interface Activity {
   coordinates: Position[];
   id: string;
   metadata: ActivityMetadata;
+  elevation?: elevationMetadata;
+}
+
+export interface elevationMetadata {
+  maxElevation: number;
+  minElevation: number;
+  elevationGain: number;
+  elevationPoints: number[];
 }
 
 interface ActivityMetadata {
   color: string;
-}
-
-export interface PreActivity {
-  description: string | undefined;
-  activityType: string | undefined;
 }

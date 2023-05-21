@@ -25,18 +25,23 @@ import { transformCoord } from "../../../utils/transformers/processCoord";
  * The coordinates for point annotation follow [longitude, latitude]. Longitude is the bigger number (138), latitude is the smaller number (-35).
  */
 Mapbox.setAccessToken(CONFIG.MAP.ACCESS_TOKEN);
-Mapbox.requestAndroidLocationPermissions();
 export default function Map() {
   const cameraRef = useRef<CameraRef>(null);
   const mapRef = useRef<MapView>(null);
   const mapStyle = mapStore((state) => state.mapStyle);
-  const [recordingState, locations, updateLocation, updateDistance] =
-    recordingStore((state) => [
-      state.recordingState,
-      state.locations,
-      state.updateLocation,
-      state.updateDistance,
-    ]);
+  const [
+    recordingState,
+    locations,
+    updateLocation,
+    updateDistance,
+    updateElevation,
+  ] = recordingStore((state) => [
+    state.recordingState,
+    state.locations,
+    state.updateLocation,
+    state.updateDistance,
+    state.updateElevation,
+  ]);
   const followUser = trackingStore((state) => state.followUser);
   return (
     <>
@@ -68,7 +73,7 @@ export default function Map() {
           requestsAlwaysUse={true}
           visible={true}
           onUpdate={(location) => {
-            console.log(`loc up`);
+            console.log(`${JSON.stringify(location.coords)}`);
             if (recordingState.isRecording) {
               updateLocation(location.coords);
               if (locations.length === 2) {
@@ -80,6 +85,10 @@ export default function Map() {
                   longitude: location.coords.longitude,
                 });
                 updateDistance(coords.a, coords.b);
+              }
+              // Sometimes altitude is not available with bad gps signal
+              if (location.coords.altitude) {
+                updateElevation(location.coords.altitude);
               }
             }
           }}

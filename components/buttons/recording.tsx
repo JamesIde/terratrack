@@ -10,20 +10,23 @@ import { processCoordinates } from "../../utils/transformers/processCoordinates"
 import { processNewDate } from "../../utils/transformers/processDate";
 import { processTime } from "../../utils/transformers/processTime";
 import { addActivity } from "../../services/activity.service";
-import uuid from "react-native-uuid";
 import { getRandomColor } from "../../utils/misc/getRandomColor";
 import BeforeYouStardActivityModal from "../modals/BeforeYouStartModal";
+import uuid from "react-native-uuid";
+import { processElevation } from "../../utils/transformers/processElevation";
 
 // This component is probably doing too much
 export default function Recording() {
   const [
     locations,
+    elevationArr,
     distance,
     recordingState,
     handleRecording,
     clearCurrentActivity,
   ] = recordingStore((state) => [
     state.locations,
+    state.elevationArr,
     state.distance,
     state.recordingState,
     state.handleRecording,
@@ -104,6 +107,7 @@ export default function Recording() {
       metadata: {
         color: getRandomColor(),
       },
+      elevation: processElevation(elevationArr),
       id,
     };
     await addActivity(currentActivity, id).then(() => {
@@ -128,16 +132,18 @@ export default function Recording() {
 
   // This triggers the actual recording of the data when the modal form submits
   function closeModal(preActivityData: PreActivity) {
-    setPreActivityForm({
-      activityType: preActivityData.activityType!,
-      description: preActivityData.description!,
-    });
-    const currentTime = new Date();
-    setTimeData((prevState) => ({
-      ...prevState,
-      startTime: currentTime,
-    }));
-    handleRecording(RecordingStateEnum.RECORDING);
+    if (preActivityData.activityType && preActivityData.description) {
+      setPreActivityForm({
+        activityType: preActivityData.activityType!,
+        description: preActivityData.description!,
+      });
+      const currentTime = new Date();
+      setTimeData((prevState) => ({
+        ...prevState,
+        startTime: currentTime,
+      }));
+      handleRecording(RecordingStateEnum.RECORDING);
+    }
     // Close it anyway (could be a cancel + undefined passed in as 'close')
     setModalVisible(false);
   }
