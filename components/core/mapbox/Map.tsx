@@ -46,13 +46,13 @@ export default function Map() {
     state.updateDistance,
     state.updateElevation,
   ]);
-  const [followUser, setFollowUser] = trackingStore((state) => [
+  const [followUser] = trackingStore((state) => [
     state.followUser,
-    state.setFollowUser,
   ]);
   const selectedActivity = activityStore((state) => state.selectedActivity);
 
   const zoomToActivity = () => {
+    let screenHeight = (Dimensions.get("window").height)
     let ne: Position = [0, 0];
     let sw: Position = [0, 0];
     if (selectedActivity) {
@@ -62,7 +62,13 @@ export default function Map() {
       sw = [bbox[0], bbox[1]];
     }
 
-    return cameraRef.current?.fitBounds(ne, sw, 100, 100);
+
+    return cameraRef.current?.fitBounds(ne, sw, [
+      screenHeight * 0.1,
+      0,
+      screenHeight * 0.66,
+      0,
+    ], 100);
   };
 
   useEffect(() => {
@@ -124,10 +130,12 @@ export default function Map() {
         <SelectedShapeSource />
       </Mapbox.MapView>
       <>
-        <FocusCurrentPosition />
-        <MapStyleButton />
-        <StatOverlay />
-        <Recording />
+        {!selectedActivity && <>
+          <FocusCurrentPosition />
+          <MapStyleButton />
+          <StatOverlay />
+          <Recording />
+        </>}
       </>
     </>
   );
