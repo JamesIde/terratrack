@@ -1,15 +1,17 @@
-import { Text, StyleSheet } from "react-native";
+import { Text, StyleSheet, View } from "react-native";
 import BottomSheet, { BottomSheetFlatList } from "@gorhom/bottom-sheet";
 import { useMemo, useCallback, useState, useEffect, useRef } from "react";
 import { Dimensions } from "react-native";
 import { getActivities } from "../../../services/activity.service";
 import { Activity } from "../../../@types/activity";
 import { ShowAlert } from "../../../utils/alert/alert";
-import ActivityItem from "./ActivityItem";
-import ActivitySheetHeaderWrapper from "./ActivitySheetHeaderWrapper";
-import SelectedActivity from "./SelectedActivity";
 import { activityStore } from "../../../stores/activityStore";
 import { trackingStore } from "../../../stores/trackingStore";
+import ActivitySortButton from "../../buttons/ActivitySortButton";
+import ActivitySearchBar from "./ActivitySearchBar";
+import ActivitySheetHeader from "./ActivitySheetHeader";
+import ActivityItem from "./ActivityItem";
+import SelectedActivity from "./SelectedActivity";
 export default function ActivitySheet() {
   // Need to read up on useCallback and useMemo too. Been a while and don't fully understand whats happening here.
   const sheetRef = useRef<BottomSheet>(null);
@@ -75,7 +77,11 @@ export default function ActivitySheet() {
     >
       {!selectedActivity ? (
         <>
-          <ActivitySheetHeaderWrapper />
+          <ActivitySortButton />
+          <View style={styles.activityContainer}>
+            <ActivitySheetHeader />
+            <ActivitySearchBar />
+          </View>
           {data.length > 0 ? (
             <BottomSheetFlatList
               data={data}
@@ -108,5 +114,7 @@ export const styles = StyleSheet.create({
   },
   activityText: {
     textAlign: "center",
+  }, activityContainer: {
+    paddingHorizontal: 10,
   },
 });
