@@ -1,5 +1,5 @@
 import { Dimensions, StyleSheet } from "react-native";
-import React, { useEffect, useMemo, useRef } from "react";
+import React, { useEffect, useMemo, useRef, useState } from "react";
 import Mapbox, {
   Camera,
   MapView,
@@ -30,6 +30,8 @@ import CurrentShapeSource from "./CurrentShapeSource";
  */
 Mapbox.setAccessToken(CONFIG.MAP.ACCESS_TOKEN);
 export default function Map() {
+  // This allows the camera to move back to user location after selected activity deselection
+  const [userLocation, setUserLocation] = useState<Mapbox.Location | null>(null);
   const cameraRef = useRef<CameraRef>(null);
   const mapRef = useRef<MapView>(null);
   const mapStyle = mapStore((state) => state.mapStyle);
@@ -46,8 +48,9 @@ export default function Map() {
     state.updateDistance,
     state.updateElevation,
   ]);
-  const [followUser] = trackingStore((state) => [
+  const [followUser, setFollowUser] = trackingStore((state) => [
     state.followUser,
+    state.setFollowUser
   ]);
   const selectedActivity = activityStore((state) => state.selectedActivity);
 
@@ -56,21 +59,34 @@ export default function Map() {
     let ne: Position = [0, 0];
     let sw: Position = [0, 0];
     if (selectedActivity) {
+      console.log(`selected`)
       let coords = Turf.lineString(selectedActivity.coordinates);
       let bbox = Turf.bbox(coords);
       ne = [bbox[2], bbox[3]];
       sw = [bbox[0], bbox[1]];
+      cameraRef.current?.fitBounds(ne, sw, [
+        screenHeight * 0.1,
+        0,
+        screenHeight * 0.66,
+        0,
+      ], 100);
+
+    } else {
+      console.log(`not selected`)
+
+      setFollowUser(false)
+      setTimeout(() => {
+        cameraRef.current?.fitBounds(
+          [userLocation!.coords.longitude, userLocation!.coords.latitude],
+          [userLocation!.coords.longitude, userLocation!.coords.latitude],
+          100, 100
+        )
+        // setFollowUser(true)
+      }, 100)
     }
-
-
-    return cameraRef.current?.fitBounds(ne, sw, [
-      screenHeight * 0.1,
-      0,
-      screenHeight * 0.66,
-      0,
-    ], 100);
   };
 
+  console.log(`value ${followUser}`)
   useEffect(() => {
     zoomToActivity();
   }, [selectedActivity]);
@@ -92,7 +108,6 @@ export default function Map() {
         <Camera
           followUserLocation={followUser}
           ref={cameraRef}
-          defaultSettings={CONFIG.MAP.DEFAULT_SETTINGS.SHEOAK}
           minZoomLevel={11.5}
           maxZoomLevel={18}
         />
@@ -104,6 +119,7 @@ export default function Map() {
           requestsAlwaysUse={true}
           visible={true}
           onUpdate={(location) => {
+            setUserLocation(location)
             if (recordingState.isRecording) {
               updateLocation(location.coords);
               if (locations.length === 2) {
@@ -121,6 +137,10 @@ export default function Map() {
               // Sometimes altitude is not available with bad gps signal
               if (location.coords.altitude) {
                 updateElevation(location.coords.altitude);
+              }
+
+              if (!followUser) {
+                setFollowUser(true)
               }
             }
           }}
