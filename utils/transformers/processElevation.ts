@@ -25,3 +25,8 @@ export function processElevation(
     elevationPoints,
   };
 }
+
+
+export function formatElevation(elevation: number){
+  return elevation.toFixed(0) + 'm';
+}

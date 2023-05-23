@@ -1,5 +1,5 @@
 import { Text, StyleSheet, View } from "react-native";
-import BottomSheet, { BottomSheetFlatList } from "@gorhom/bottom-sheet";
+import BottomSheet, { BottomSheetFlatList, BottomSheetScrollView } from "@gorhom/bottom-sheet";
 import { useMemo, useCallback, useState, useEffect, useRef } from "react";
 import { Dimensions } from "react-native";
 import { getActivities } from "../../../services/activity.service";
@@ -43,7 +43,7 @@ export default function ActivitySheet() {
     return fetchedData.map((item) => item);
   }, [fetchedData]);
 
-  const snapPoints = useMemo(() => ["5%", "50%", "80%"], []);
+  const snapPoints = useMemo(() => ["5%", "50%", "90%"], []);
 
   const handleSheetChanges = useCallback((index: number) => {
     // Closed sheet
@@ -99,10 +99,12 @@ export default function ActivitySheet() {
           )}
         </>
       ) : (
-        <SelectedActivity
-          activity={selectedActivity}
-          deselectActivity={deselectActivity}
-        />
+        <BottomSheetScrollView>
+          <SelectedActivity
+            activity={selectedActivity}
+            deselectActivity={deselectActivity}
+          />
+        </BottomSheetScrollView>
       )}
     </BottomSheet>
   );
