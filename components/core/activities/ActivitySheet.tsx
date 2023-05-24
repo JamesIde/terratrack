@@ -5,6 +5,7 @@ import { Dimensions } from "react-native";
 import { getActivities } from "../../../services/activity.service";
 import { Activity } from "../../../@types/activity";
 import { ShowAlert } from "../../../utils/alert/alert";
+import { NativeViewGestureHandler } from 'react-native-gesture-handler';
 import { activityStore } from "../../../stores/activityStore";
 import { trackingStore } from "../../../stores/trackingStore";
 import ActivitySortButton from "../../buttons/ActivitySortButton";
@@ -73,7 +74,6 @@ export default function ActivitySheet() {
     <BottomSheet
       snapPoints={snapPoints}
       onChange={handleSheetChanges}
-      ref={sheetRef}
     >
       {!selectedActivity ? (
         <>
@@ -99,12 +99,14 @@ export default function ActivitySheet() {
           )}
         </>
       ) : (
-        <BottomSheetScrollView>
-          <SelectedActivity
-            activity={selectedActivity}
-            deselectActivity={deselectActivity}
-          />
-        </BottomSheetScrollView>
+        // <BottomSheetScrollView>
+        //   <NativeViewGestureHandler disallowInterruption={true}>
+        <SelectedActivity
+          activity={selectedActivity}
+          deselectActivity={deselectActivity}
+        />
+        //   </NativeViewGestureHandler>
+        // </BottomSheetScrollView>
       )}
     </BottomSheet>
   );

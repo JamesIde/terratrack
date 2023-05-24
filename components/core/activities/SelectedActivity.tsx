@@ -3,6 +3,7 @@ import { Activity } from "../../../@types/activity";
 import { Ionicons } from "@expo/vector-icons";
 import { globalColors } from "../../../global/styles/globalColors";
 import ActivityMetadata from "./ActivityMetadata";
+import ElevationChart from "./ElevationChart";
 
 export default function SelectedActivity({
   activity,
@@ -38,6 +39,7 @@ export default function SelectedActivity({
 
       </View>
       <ActivityMetadata activity={activity!} />
+      <ElevationChart activity={activity!} />
     </>
   );
 }

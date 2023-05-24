@@ -22,10 +22,6 @@ import FocusCurrentPosition from "../../buttons/FocusCurrentPosition";
 import MapStyleButton from "../../buttons/MapStyle";
 import CurrentShapeSource from "./CurrentShapeSource";
 /**
- * We don't want to manipulate the mapbox location object if we can avoid it.
- * If we do, have a util method that does that. Don't want to lose track over the app
- * Where coordinates are of different types when they all should be the same.
- * Use utils heavily for data transforming.
  * The coordinates for point annotation follow [longitude, latitude]. Longitude is the bigger number (138), latitude is the smaller number (-35).
  */
 Mapbox.setAccessToken(CONFIG.MAP.ACCESS_TOKEN);
@@ -59,7 +55,6 @@ export default function Map() {
     let ne: Position = [0, 0];
     let sw: Position = [0, 0];
     if (selectedActivity) {
-      console.log(`selected`)
       let coords = Turf.lineString(selectedActivity.coordinates);
       let bbox = Turf.bbox(coords);
       ne = [bbox[2], bbox[3]];
@@ -67,21 +62,19 @@ export default function Map() {
       cameraRef.current?.fitBounds(ne, sw, [
         screenHeight * 0.1,
         0,
-        screenHeight * 0.66,
+        screenHeight * 0.6,
         0,
       ], 100);
 
     } else {
-      console.log(`not selected`)
-
       setFollowUser(false)
+      if (!userLocation) { return }
       setTimeout(() => {
         cameraRef.current?.fitBounds(
           [userLocation!.coords.longitude, userLocation!.coords.latitude],
           [userLocation!.coords.longitude, userLocation!.coords.latitude],
-          100, 100
+          100, 500
         )
-        // setFollowUser(true)
       }, 100)
     }
   };
