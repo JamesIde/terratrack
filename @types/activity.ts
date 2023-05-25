@@ -1,7 +1,7 @@
 import { Position } from "@rnmapbox/maps/lib/typescript/types/Position";
 export interface PreActivity {
   description: string | undefined;
-  activityType: string | undefined;
+  activity: string | undefined;
 }
 
 export interface Activity {

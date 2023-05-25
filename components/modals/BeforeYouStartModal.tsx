@@ -11,6 +11,8 @@ import { PreActivity } from "../../@types/activity";
 import { useForm, Controller } from "react-hook-form";
 import { Picker } from "@react-native-picker/picker";
 import { globalColors } from "../../global/styles/globalColors";
+import { MaterialCommunityIcons } from "@expo/vector-icons"
+import React, { useState } from "react";
 export default function BeforeYouStardActivityModal({
   modalVisible,
   closeModal,
@@ -26,23 +28,35 @@ export default function BeforeYouStardActivityModal({
   } = useForm({
     defaultValues: {
       description: "",
-      activityType: "",
+      activity: "",
     },
   });
+
+  const [iconError, setIconError] = useState('')
+  const [selectedIcon, setSelectedIcon] = useState('walk');
+
+  const handleIconPress = (iconName: string) => {
+    setSelectedIcon(iconName);
+  };
+
+  const isIconSelected = (iconName: string) => {
+    return selectedIcon === iconName;
+  };
+
+  // Sorry typescript...
   const onSubmit = (formData: any) => {
+    if (!selectedIcon || selectedIcon === '') {
+      setIconError("An activity type is required.")
+      return;
+    }
+    formData.activity = selectedIcon
     closeModal(formData);
     reset({
       description: "",
-      activityType: "",
+      activity: ""
     });
   };
-  const activityTypes = [
-    "Select an activity",
-    "Running",
-    "Cycling",
-    "Walking",
-    "Hiking",
-  ];
+
   return (
     <Modal
       animationType="fade"
@@ -51,7 +65,7 @@ export default function BeforeYouStardActivityModal({
       onRequestClose={() => {
         closeModal({
           description: undefined,
-          activityType: undefined,
+          activity: undefined,
         });
       }}
     >
@@ -67,11 +81,11 @@ export default function BeforeYouStardActivityModal({
               }}
               render={({ field: { onChange, onBlur, value } }) => (
                 <>
-                  <Text style={styles.enterDescription}>
-                    Enter a description
+                  <Text style={styles.activityTitle}>
+                    Activity Title
                   </Text>
                   <TextInput
-                    placeholder="A description ..."
+                    placeholder="A quick run in the park..."
                     onBlur={onBlur}
                     onChangeText={onChange}
                     value={value}
@@ -84,58 +98,130 @@ export default function BeforeYouStardActivityModal({
             {errors.description && (
               <Text style={styles.errorText}>A description is required</Text>
             )}
-
-            <Controller
-              control={control}
-              rules={{
-                required: "An activity type is required",
-                validate: {
-                  selectedActivity: (value) =>
-                    value !== "Select an activity" ||
-                    "An activity type is required",
-                },
-              }}
-              render={({ field: { onChange, value } }) => (
-                <>
-                  <Text style={styles.activityTypeText}>Activity Type</Text>
-                  <View
-                    style={{
-                      borderWidth: 1,
-                      borderColor: globalColors.primaryGrey100,
-                    }}
-                  >
-                    <Picker selectedValue={value} onValueChange={onChange}>
-                      {activityTypes.map((type) => {
-                        return (
-                          <Picker.Item label={type} value={type} key={type} />
-                        );
-                      })}
-                    </Picker>
-                  </View>
-                </>
-              )}
-              name="activityType"
-            />
-            {errors.activityType && (
-              <Text style={styles.errorText}>
-                {errors.activityType.message}
+            <View style={{
+              backgroundColor: globalColors.primaryLightBlue,
+              borderRadius: 10,
+              height: 120,
+              marginTop: 10
+            }}>
+              <Text style={{
+                textAlign: "center",
+                marginTop: 10,
+                marginBottom: 10,
+                fontWeight: "bold",
+                color: globalColors.primaryDarkBlue,
+                fontSize: 16
+              }}>
+                Choose an Activity
               </Text>
-            )}
-            <View style={styles.btnWrapper}>
-              <Button title="Start" onPress={handleSubmit(onSubmit)} />
+              <View style={styles.container}>
+                <View
+                  style={[
+                    styles.iconWrapper,
+                  ]}
+                >
+                  <Pressable onPress={() => handleIconPress('run')}>
+                    <View style={
+                      isIconSelected('run') && styles.iconContainer
+                    }>
+                      <MaterialCommunityIcons name="run" size={30} color="black" />
+                    </View>
+                  </Pressable>
+                </View>
+                <View
+                  style={[
+                    styles.iconWrapper,
+
+                  ]}
+                >
+                  <Pressable onPress={() => handleIconPress('bike')}>
+                    <View style={
+                      isIconSelected('bike') && styles.iconContainer
+                    }>
+                      <MaterialCommunityIcons name="bike" size={30} color="black" />
+                    </View>
+                  </Pressable>
+                </View>
+                <View
+                  style={[
+                    styles.iconWrapper,
+                  ]}
+                >
+                  <Pressable onPress={() => handleIconPress('walk')}>
+                    <View style={
+                      isIconSelected('walk') && styles.iconContainer
+                    }>
+                      <MaterialCommunityIcons name="walk" size={30} color="black" />
+                    </View>
+                  </Pressable>
+                </View>
+                <View
+                  style={[
+                    styles.iconWrapper,
+                  ]}
+                >
+                  <Pressable onPress={() => handleIconPress('hiking')}>
+                    <View style={
+                      isIconSelected('hiking') && styles.iconContainer
+                    }>
+                      <MaterialCommunityIcons name="hiking" size={30} color="black" />
+                    </View>
+                  </Pressable>
+                </View>
+              </View>
             </View>
-            <View style={styles.btnWrapper}>
-              <Button
-                title="Cancel"
+            <View>
+              {iconError !== "" && <>
+                <Text style={{
+                  color: "red"
+                }}>
+                  {iconError}
+                </Text>
+              </>}
+            </View>
+
+            <View style={{
+              flexDirection: "column",
+              justifyContent: "center",
+              marginTop: 20
+            }}>
+              <Pressable
+                onPress={handleSubmit(onSubmit)}
+              >
+                <View style={styles.startBtn}>
+                  <Text style={{
+                    fontWeight: "bold",
+                    color: globalColors.primaryDarkBlue,
+                    fontSize: 17
+                  }}>
+                    Start
+                  </Text>
+                </View>
+              </Pressable>
+              <Pressable
                 onPress={() => {
                   closeModal({
                     description: undefined,
-                    activityType: undefined,
+                    activity: undefined,
                   });
                 }}
-                color={"red"}
-              />
+              >
+
+                <View style={styles.cancelBtn}
+
+                >
+                  <Text style={{
+                    fontWeight: "bold",
+                    color: globalColors.primaryDarkBlue,
+                    fontSize: 17
+                  }}>
+                    Cancel
+                  </Text>
+
+                </View>
+              </Pressable>
             </View>
+
           </View>
         </View>
       </View>
@@ -150,7 +236,7 @@ const styles = StyleSheet.create({
   },
   modalView: {
     margin: 20,
-    backgroundColor: "white",
+    backgroundColor: globalColors.primaryWhite,
     borderRadius: 10,
     padding: 25,
     shadowColor: "#000",
@@ -167,16 +253,19 @@ const styles = StyleSheet.create({
     fontSize: 20,
     marginBottom: 10,
     textAlign: "center",
+    color: globalColors.primaryDarkBlue
   },
-  enterDescription: {
+  activityTitle: {
     marginBottom: 10,
     fontWeight: "bold",
+    color: globalColors.primaryDarkBlue
   },
   descriptionInput: {
-    borderWidth: 1,
-    borderColor: globalColors.primaryGrey100,
+    backgroundColor: globalColors.primaryLightBlue,
     paddingLeft: 10,
     borderRadius: 5,
+    padding: 5,
+    color: globalColors.primaryDarkBlue
   },
   errorText: {
     color: "red",
@@ -187,7 +276,39 @@ const styles = StyleSheet.create({
     marginTop: 10,
     fontWeight: "bold",
   },
-  btnWrapper: {
+  startBtn: {
     marginTop: 15,
+    width: "100%",
+    alignItems: "center",
+    borderRadius: 10,
+    padding: 10,
+    backgroundColor: globalColors.primaryLightBlue
   },
+  cancelBtn: {
+    marginTop: 15,
+    width: "100%",
+    alignItems: "center",
+    borderRadius: 10,
+    padding: 10,
+    backgroundColor: globalColors.primaryLightBlue
+  },
+  container: {
+    flexDirection: 'row',
+    paddingHorizontal: 16,
+    marginTop: 10,
+
+  },
+  iconWrapper: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: "center",
+  },
+  iconContainer: {
+    width: 40,
+    height: 40,
+    borderRadius: 40,
+    backgroundColor: 'white',
+    alignItems: 'center',
+    justifyContent: 'center',
+  }
 });

@@ -44,7 +44,7 @@ const styles = StyleSheet.create({
     gridItem: {
         width: '48%',
         height: 75,
-        backgroundColor: globalColors.primaryGrey,
+        backgroundColor: globalColors.primaryWhite,
         borderRadius: 8,
         padding: 10,
         marginBottom: 10,
@@ -54,6 +54,7 @@ const styles = StyleSheet.create({
         fontSize: 18,
         fontWeight: 'bold',
         marginBottom: 5,
+        color: globalColors.primaryDarkBlue
     },
     text: {
         fontSize: 16,

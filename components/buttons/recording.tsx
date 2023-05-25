@@ -127,9 +127,11 @@ export default function Recording() {
 
   // This triggers the actual recording of the data when the modal form submits
   function closeModal(preActivityData: PreActivity) {
-    if (preActivityData.activityType && preActivityData.description) {
+    console.log(JSON.stringify(preActivityData))
+    if (preActivityData.activity && preActivityData.description) {
+      console.log(true)
       setPreActivityForm({
-        activityType: preActivityData.activityType!,
+        activityType: preActivityData.activity!,
         description: preActivityData.description!,
       });
       const currentTime = new Date();
@@ -139,6 +141,7 @@ export default function Recording() {
       }));
       handleRecording(RecordingStateEnum.RECORDING);
     }
+    console.log(false)
     // Close it anyway (could be a cancel + undefined passed in as 'close')
     setModalVisible(false);
   }

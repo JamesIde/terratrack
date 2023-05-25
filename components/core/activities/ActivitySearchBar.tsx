@@ -9,6 +9,9 @@ export default function ActivitySearchBar() {
         placeholder="Search routes"
         onChangeText={(text) => console.log(text)}
         keyboardType="default"
+        style={{
+          width: "100%"
+        }}
       />
     </View>
   );
@@ -17,7 +20,7 @@ export default function ActivitySearchBar() {
 const styles = StyleSheet.create({
   container: {
     flexDirection: "row",
-    backgroundColor: globalColors.primaryGrey,
+    backgroundColor: globalColors.primaryWhite,
     padding: 2,
     borderRadius: 7,
     marginBottom: 25,

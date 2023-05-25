@@ -13,6 +13,7 @@ import ActivitySearchBar from "./ActivitySearchBar";
 import ActivitySheetHeader from "./ActivitySheetHeader";
 import ActivityItem from "./ActivityItem";
 import SelectedActivity from "./SelectedActivity";
+import { globalColors } from "../../../global/styles/globalColors";
 export default function ActivitySheet() {
   // Need to read up on useCallback and useMemo too. Been a while and don't fully understand whats happening here.
   const sheetRef = useRef<BottomSheet>(null);
@@ -57,23 +58,28 @@ export default function ActivitySheet() {
   }, []);
 
   const onActivityClick = (activity: Activity) => {
-    sheetRef.current?.snapToIndex(1); // 50%
     setSelectedActivity(activity);
     // Camera won't follow user, Map.tsx ref sets bounds to the Turf bbox
     setFollowUser(false);
+    sheetRef.current?.snapToIndex(1); // 50%
   };
 
   const deselectActivity = () => {
-    sheetRef.current?.snapToIndex(2); // 80%
     setSelectedActivity(null);
     // Returns camera view to user location
     setFollowUser(true);
+    sheetRef.current?.snapToIndex(2); // 80%
   };
+
 
   return (
     <BottomSheet
       snapPoints={snapPoints}
       onChange={handleSheetChanges}
+      ref={sheetRef}
+      backgroundStyle={{
+        backgroundColor: globalColors.primaryLightBlue
+      }}
     >
       {!selectedActivity ? (
         <>
