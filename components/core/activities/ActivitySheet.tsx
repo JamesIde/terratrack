@@ -1,11 +1,10 @@
 import { Text, StyleSheet, View } from "react-native";
-import BottomSheet, { BottomSheetFlatList, BottomSheetScrollView } from "@gorhom/bottom-sheet";
+import BottomSheet, { BottomSheetFlatList } from "@gorhom/bottom-sheet";
 import { useMemo, useCallback, useState, useEffect, useRef } from "react";
 import { Dimensions } from "react-native";
 import { getActivities } from "../../../services/activity.service";
 import { Activity } from "../../../@types/activity";
 import { ShowAlert } from "../../../utils/alert/alert";
-import { NativeViewGestureHandler } from 'react-native-gesture-handler';
 import { activityStore } from "../../../stores/activityStore";
 import { trackingStore } from "../../../stores/trackingStore";
 import ActivitySortButton from "../../buttons/ActivitySortButton";
@@ -14,10 +13,13 @@ import ActivitySheetHeader from "./ActivitySheetHeader";
 import ActivityItem from "./ActivityItem";
 import SelectedActivity from "./SelectedActivity";
 import { globalColors } from "../../../global/styles/globalColors";
+import { sortStore } from "../../../stores/sortStore";
+import { processActivitySorting } from "../../../utils/transformers/processActivitySorting";
 export default function ActivitySheet() {
   // Need to read up on useCallback and useMemo too. Been a while and don't fully understand whats happening here.
   const sheetRef = useRef<BottomSheet>(null);
   const [fetchedData, setFetchedData] = useState<Activity[]>([]);
+  const selectedSort = sortStore(state => state.selectedSort)
   const [selectedActivity, setSelectedActivity] = activityStore((state) => [
     state.selectedActivity,
     state.setSelectedActivity,
@@ -42,8 +44,8 @@ export default function ActivitySheet() {
   }, []);
 
   const data = useMemo(() => {
-    return fetchedData.map((item) => item);
-  }, [fetchedData]);
+    return processActivitySorting(fetchedData, selectedSort).reverse()
+  }, [fetchedData, selectedSort]);
 
   const snapPoints = useMemo(() => ["5%", "50%", "90%"], []);
 
@@ -83,9 +85,13 @@ export default function ActivitySheet() {
     >
       {!selectedActivity ? (
         <>
-          <ActivitySortButton />
           <View style={styles.activityContainer}>
-            <ActivitySheetHeader />
+            <View style={{
+              flexDirection: "row-reverse", justifyContent: "space-between"
+            }}>
+              <ActivitySortButton />
+              <ActivitySheetHeader />
+            </View>
             <ActivitySearchBar />
           </View>
           {data.length > 0 ? (
@@ -124,7 +130,9 @@ export const styles = StyleSheet.create({
   },
   activityText: {
     textAlign: "center",
-  }, activityContainer: {
+  },
+  activityContainer: {
     paddingHorizontal: 10,
+    marginTop: Dimensions.get("window").height * 0.02,
   },
 });
