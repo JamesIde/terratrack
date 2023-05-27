@@ -60,6 +60,8 @@ export const recordingStore = create<{
             isPaused: false,
           },
           distance: 0,
+          currentElevation: 0,
+          elevationArr: [],
           locations: [],
           showLine: false,
         }));
