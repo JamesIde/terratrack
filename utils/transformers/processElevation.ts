@@ -26,7 +26,6 @@ export function processElevation(
   };
 }
 
-
-export function formatElevation(elevation: number){
-  return elevation.toFixed(0) + ' meters';
+export function formatElevation(elevation: number) {
+  return elevation.toFixed(0) + " meters";
 }

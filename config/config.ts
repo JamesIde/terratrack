@@ -1,5 +1,5 @@
 import { CameraStop } from "@rnmapbox/maps/lib/typescript/components/Camera";
-import Constants from "expo-constants"
+import Constants from "expo-constants";
 export const CONFIG = {
   MAP: {
     ACCESS_TOKEN: Constants.expoConfig?.extra?.MAPBOX_ACCESS_TOKEN,
@@ -21,5 +21,5 @@ export const CONFIG = {
   },
   SENTRY: {
     DSN: Constants.expoConfig?.extra?.SENTRY_DSN,
-  }
+  },
 };

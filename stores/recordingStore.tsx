@@ -4,7 +4,7 @@ import { RecordingState } from "../@types/recordingState";
 import { haversineDistance } from "../utils/algo/haversineDistance";
 import { HCoord } from "../@types/haversineCoords";
 import { activityTypeEnum } from "../@types/enum/activityTypeEnum";
-import * as Location from 'expo-location';
+import * as Location from "expo-location";
 
 export const recordingStore = create<{
   locations: Array<Location.LocationObjectCoords>;
