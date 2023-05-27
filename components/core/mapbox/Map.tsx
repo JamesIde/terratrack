@@ -33,12 +33,8 @@ const TASK_FETCH_LOCATION = "TASK_FETCH_LOCATION";
 
 export default function Map() {
   // This allows the camera to move back to user location after selected activity deselection
-  const [userLocation, setUserLocation] =
-    useState<Location.LocationObject | null>(null);
   const cameraRef = useRef<CameraRef>(null);
-  const mapRef = useRef<MapView>(null);
   const mapStyle = mapStore((state) => state.mapStyle);
-  const [intervalId, setIntervalId] = useState<NodeJS.Timeout | null>(null);
   const [
     recordingState,
     locations,
@@ -74,16 +70,15 @@ export default function Map() {
         100
       );
     } else {
+      setFollowUser(false);
       await getCoords().then((location) => {
-        setTimeout(() => {
-          setFollowUser(false);
-          cameraRef.current?.fitBounds(
-            [location.coords.longitude, location.coords.latitude],
-            [location.coords.longitude, location.coords.latitude],
-            100,
-            500
-          );
-        });
+        console.log(`got coords`);
+        cameraRef.current?.fitBounds(
+          [location.coords.longitude, location.coords.latitude],
+          [location.coords.longitude, location.coords.latitude],
+          100,
+          500
+        );
       });
     }
   };
@@ -118,7 +113,6 @@ export default function Map() {
   });
 
   useEffect(() => {
-    console.log(`FOLLOW: ${followUser}`);
     zoomToActivity();
     if (recordingState.isRecording) {
       Location.startLocationUpdatesAsync(TASK_FETCH_LOCATION, {
