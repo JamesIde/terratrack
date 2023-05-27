@@ -3,6 +3,7 @@ import { globalColors } from "../../../global/styles/globalColors";
 import { Activity } from "../../../@types/activity";
 import { processDistance } from "../../../utils/transformers/processDistance";
 import { formatElevation } from "../../../utils/transformers/processElevation";
+import { formatShortFormTime } from "../../../utils/transformers/processTime";
 export default function ActivityMetadata({ activity }: { activity: Activity }) {
   // This could easily be dynamic. Why not try it?
   return (
@@ -17,7 +18,10 @@ export default function ActivityMetadata({ activity }: { activity: Activity }) {
       </View>
       <View style={styles.gridItem}>
         <Text style={styles.label}>DURATION</Text>
-        <Text style={styles.text}>{activity.duration}</Text>
+        <Text style={styles.text}>
+          {" "}
+          {formatShortFormTime(activity.duration)}
+        </Text>
       </View>
       <View style={styles.gridItem}>
         <Text style={styles.label}>ELEVATION</Text>

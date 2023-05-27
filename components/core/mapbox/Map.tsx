@@ -74,16 +74,16 @@ export default function Map() {
         100
       );
     } else {
-      setFollowUser(false);
       await getCoords().then((location) => {
         setTimeout(() => {
+          setFollowUser(false);
           cameraRef.current?.fitBounds(
             [location.coords.longitude, location.coords.latitude],
             [location.coords.longitude, location.coords.latitude],
             100,
             500
           );
-        }, 100);
+        });
       });
     }
   };
@@ -118,6 +118,7 @@ export default function Map() {
   });
 
   useEffect(() => {
+    console.log(`FOLLOW: ${followUser}`);
     zoomToActivity();
     if (recordingState.isRecording) {
       Location.startLocationUpdatesAsync(TASK_FETCH_LOCATION, {

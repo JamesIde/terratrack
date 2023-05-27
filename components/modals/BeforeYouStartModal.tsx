@@ -34,7 +34,7 @@ export default function BeforeYouStardActivityModal({
   });
 
   const [iconError, setIconError] = useState("");
-  const [selectedIcon, setSelectedIcon] = useState("Walk");
+  const [selectedIcon, setSelectedIcon] = useState("Walking");
 
   const handleIconPress = (iconName: string) => {
     setSelectedIcon(iconName);

@@ -37,11 +37,6 @@ export default function Recording() {
     state.followUser,
     state.setFollowUser,
   ]);
-  const [timeData, setTimeData] = useState({
-    elapsedTime: new Date(0),
-    startTime: new Date(0),
-    pausedTime: 0,
-  });
 
   const [preActivityForm, setPreActivityForm] = useState({
     activityType: "",
@@ -49,19 +44,26 @@ export default function Recording() {
   });
 
   const [modalVisible, setModalVisible] = useState(false);
+  const [timeData, setTimeData] = useState({
+    elapsedTime: 0,
+    startTime: new Date(0),
+    pausedTime: 0,
+  });
 
   useEffect(() => {
     let interval: NodeJS.Timeout;
     if (recordingState.isRecording) {
       interval = setInterval(() => {
         const currentTime = new Date();
-        const elapsed =
-          currentTime.getTime() -
-          timeData.startTime.getTime() +
-          timeData.pausedTime;
+        const elapsedInSeconds = Math.floor(
+          (currentTime.getTime() -
+            timeData.startTime.getTime() +
+            timeData.pausedTime) /
+            1000
+        );
         setTimeData((prevState) => ({
           ...prevState,
-          elapsedTime: new Date(elapsed),
+          elapsedTime: elapsedInSeconds,
         }));
       }, 1000);
       if (!followUser) {
@@ -107,13 +109,13 @@ export default function Recording() {
   const stopRecording = async () => {
     // Need id as the activity object for key-extractor in flat list. id is also the key in async storage kv
     let id: string = uuid.v4().toString();
-    console.log(`total seconds ${timeData.elapsedTime.getSeconds()}`);
+    console.log(`total seconds ${timeData.elapsedTime}`);
     let currentActivity: Activity = {
       description: preActivityForm.description,
       type: preActivityForm.activityType,
       coordinates: processCoordinates(locations),
       distance: distance,
-      duration: timeData.elapsedTime.getSeconds(),
+      duration: timeData.elapsedTime,
       startTime: timeData.startTime,
       endTime: new Date(),
       metadata: {
@@ -131,7 +133,7 @@ export default function Recording() {
     handleRecording(RecordingStateEnum.STOPPED);
     setTimeData((prevState) => ({
       ...prevState,
-      elapsedTime: new Date(0),
+      elapsedTime: 0,
       startTime: new Date(0),
       pausedTime: 0,
     }));
@@ -210,7 +212,7 @@ export default function Recording() {
     <>
       <StatOverlay
         distance={distance}
-        timeInSeconds={timeData.elapsedTime.getSeconds()}
+        timeInSeconds={timeData.elapsedTime}
         recordingState={recordingState}
         locations={locations}
       />

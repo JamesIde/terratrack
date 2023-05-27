@@ -41,7 +41,7 @@ export default function ElevationChart({ activity }: { activity: Activity }) {
         nameGap: 25,
         axisLabel: {
           formatter: (value: any) => {
-            return value.toFixed(0);
+            return value < 1000 ? value : value / 1000;
           },
         },
       },
