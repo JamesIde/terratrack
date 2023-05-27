@@ -2,7 +2,7 @@ import { Text, StyleSheet, View } from "react-native";
 import BottomSheet, { BottomSheetFlatList } from "@gorhom/bottom-sheet";
 import { useMemo, useCallback, useState, useEffect, useRef } from "react";
 import { Dimensions } from "react-native";
-import { getActivities } from "../../../services/activity.service";
+import { deleteActivity, getActivities } from "../../../services/activity.service";
 import { Activity } from "../../../@types/activity";
 import { ShowAlert } from "../../../utils/alert/alert";
 import { activityStore } from "../../../stores/activityStore";
@@ -15,9 +15,12 @@ import SelectedActivity from "./SelectedActivity";
 import { globalColors } from "../../../global/styles/globalColors";
 import { sortStore } from "../../../stores/sortStore";
 import { processActivitySorting } from "../../../utils/transformers/processActivitySorting";
+import DeleteActivityModal from "../../modals/DeleteActivityModal";
 export default function ActivitySheet() {
   // Need to read up on useCallback and useMemo too. Been a while and don't fully understand whats happening here.
   const sheetRef = useRef<BottomSheet>(null);
+  const [deleteModalVisible, setDeleteModalVisible] = useState(false);
+  const [deleteActivityKey, setDeleteActivityKey] = useState('');
   const [fetchedData, setFetchedData] = useState<Activity[]>([]);
   const selectedSort = sortStore(state => state.selectedSort)
   const [selectedActivity, setSelectedActivity] = activityStore((state) => [
@@ -73,54 +76,68 @@ export default function ActivitySheet() {
     sheetRef.current?.snapToIndex(2); // 80%
   };
 
+  const removeActivity = async (id: string) => {
+    setDeleteModalVisible(true)
+    setDeleteActivityKey(id)
+  }
+
 
   return (
-    <BottomSheet
-      snapPoints={snapPoints}
-      onChange={handleSheetChanges}
-      ref={sheetRef}
-      backgroundStyle={{
-        backgroundColor: globalColors.primaryLightBlue
-      }}
-    >
-      {!selectedActivity ? (
-        <>
-          <View style={styles.activityContainer}>
-            <View style={{
-              flexDirection: "row-reverse", justifyContent: "space-between"
-            }}>
-              <ActivitySortButton />
-              <ActivitySheetHeader />
+    <>
+      <BottomSheet
+        snapPoints={snapPoints}
+        onChange={handleSheetChanges}
+        ref={sheetRef}
+        backgroundStyle={{
+          backgroundColor: globalColors.primaryLightBlue
+        }}
+      >
+        {!selectedActivity ? (
+          <>
+            <View style={styles.activityContainer}>
+              <View style={{
+                flexDirection: "row-reverse", justifyContent: "space-between"
+              }}>
+                <ActivitySortButton />
+                <ActivitySheetHeader />
+              </View>
+              <ActivitySearchBar />
             </View>
-            <ActivitySearchBar />
-          </View>
-          {data.length > 0 ? (
-            <BottomSheetFlatList
-              data={data}
-              keyExtractor={(i) => i.id}
-              renderItem={({ item }) => (
-                <ActivityItem
-                  activity={item}
-                  onActivityClick={onActivityClick}
-                />
-              )}
-              style={styles.flatList}
-            />
-          ) : (
-            <Text style={styles.activityText}>No activities found</Text>
-          )}
-        </>
-      ) : (
-        // <BottomSheetScrollView>
-        //   <NativeViewGestureHandler disallowInterruption={true}>
-        <SelectedActivity
-          activity={selectedActivity}
-          deselectActivity={deselectActivity}
-        />
-        //   </NativeViewGestureHandler>
-        // </BottomSheetScrollView>
-      )}
-    </BottomSheet>
+            {data.length > 0 ? (
+              <BottomSheetFlatList
+                data={data}
+                keyExtractor={(i) => i.id}
+                renderItem={({ item }) => (
+                  <ActivityItem
+                    activity={item}
+                    onActivityClick={onActivityClick}
+                    onActivityLongPress={removeActivity}
+                  />
+                )}
+                style={styles.flatList}
+              />
+            ) : (
+              <Text style={styles.activityText}>No activities found</Text>
+            )}
+          </>
+        ) : (
+          <SelectedActivity
+            activity={selectedActivity}
+            deselectActivity={deselectActivity}
+          />
+        )}
+      </BottomSheet>
+      <DeleteActivityModal
+        modalVisible={deleteModalVisible}
+        closeModal={async (shouldDelete) => {
+          if (shouldDelete) {
+            await deleteActivity(deleteActivityKey).then(() => fetchData())
+          }
+          setDeleteModalVisible(false);
+        }}
+      />
+    </>
+
   );
 }
 

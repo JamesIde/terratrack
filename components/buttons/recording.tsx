@@ -105,8 +105,6 @@ export default function Recording() {
   };
 
   const stopRecording = async () => {
-    // TODO: show a saving-activity loader.
-
     // Need id as the activity object for key-extractor in flat list. id is also the key in async storage kv
     let id: string = uuid.v4().toString();
     let currentActivity: Activity = {

@@ -4,7 +4,6 @@ import {
   Modal,
   Pressable,
   StyleSheet,
-  Button,
   TextInput,
 } from "react-native";
 import { PreActivity } from "../../@types/activity";
@@ -13,6 +12,7 @@ import { Picker } from "@react-native-picker/picker";
 import { globalColors } from "../../global/styles/globalColors";
 import { MaterialCommunityIcons } from "@expo/vector-icons"
 import React, { useState } from "react";
+import { Button } from 'react-native-paper';
 export default function BeforeYouStardActivityModal({
   modalVisible,
   closeModal,
@@ -183,43 +183,18 @@ export default function BeforeYouStardActivityModal({
             <View style={{
               flexDirection: "column",
               justifyContent: "center",
-              marginTop: 20
+              marginTop: 20,
+              gap: 10
             }}>
-              <Pressable
-                onPress={handleSubmit(onSubmit)}
-              >
-                <View style={styles.startBtn}>
-                  <Text style={{
-                    fontWeight: "bold",
-                    color: globalColors.primaryDarkBlue,
-                    fontSize: 17
-                  }}>
-                    Start
-                  </Text>
-                </View>
-              </Pressable>
-              <Pressable
-                onPress={() => {
-                  closeModal({
-                    description: undefined,
-                    activity: undefined,
-                  });
-                }}
-              >
-
-                <View style={styles.cancelBtn}
-
-                >
-                  <Text style={{
-                    fontWeight: "bold",
-                    color: globalColors.primaryDarkBlue,
-                    fontSize: 17
-                  }}>
-                    Cancel
-                  </Text>
-
-                </View>
-              </Pressable>
+              <Button mode="contained" onPress={handleSubmit(onSubmit)}>
+                Start
+              </Button>
+              <Button mode="contained-tonal" onPress={() => closeModal({
+                description: undefined,
+                activity: undefined,
+              })}>
+                Cancel
+              </Button>
             </View>
 
           </View>

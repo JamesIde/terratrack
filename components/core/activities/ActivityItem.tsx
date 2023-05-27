@@ -7,9 +7,11 @@ import { Ionicons } from "@expo/vector-icons";
 export default function ActivityItem({
   activity,
   onActivityClick,
+  onActivityLongPress
 }: {
   activity: Activity;
   onActivityClick: (activity: Activity) => void;
+  onActivityLongPress: (id: string) => void
 }) {
   return (
     <Pressable
@@ -19,6 +21,7 @@ export default function ActivityItem({
       }}
       style={({ pressed }) => [pressed ? styles.pressed : null]}
       onPress={() => onActivityClick(activity)}
+      onLongPress={() => onActivityLongPress(activity.id)}
     >
       <View style={styles.container}>
         <View style={styles.contentWrapper}>
