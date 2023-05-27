@@ -10,7 +10,7 @@ export default function ActivitySearchBar() {
         onChangeText={(text) => console.log(text)}
         keyboardType="default"
         style={{
-          width: "100%"
+          width: "100%",
         }}
       />
     </View>

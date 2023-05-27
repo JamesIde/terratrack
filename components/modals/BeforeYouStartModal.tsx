@@ -10,10 +10,10 @@ import { PreActivity } from "../../@types/activity";
 import { useForm, Controller } from "react-hook-form";
 import { Picker } from "@react-native-picker/picker";
 import { globalColors } from "../../global/styles/globalColors";
-import { MaterialCommunityIcons } from "@expo/vector-icons"
+import { MaterialCommunityIcons } from "@expo/vector-icons";
 import React, { useState } from "react";
-import { Button } from 'react-native-paper';
-import * as Haptics from 'expo-haptics';
+import { Button } from "react-native-paper";
+import * as Haptics from "expo-haptics";
 export default function BeforeYouStardActivityModal({
   modalVisible,
   closeModal,
@@ -33,8 +33,8 @@ export default function BeforeYouStardActivityModal({
     },
   });
 
-  const [iconError, setIconError] = useState('')
-  const [selectedIcon, setSelectedIcon] = useState('Walk');
+  const [iconError, setIconError] = useState("");
+  const [selectedIcon, setSelectedIcon] = useState("Walk");
 
   const handleIconPress = (iconName: string) => {
     setSelectedIcon(iconName);
@@ -46,15 +46,15 @@ export default function BeforeYouStardActivityModal({
 
   // Sorry typescript...
   const onSubmit = (formData: any) => {
-    if (!selectedIcon || selectedIcon === '') {
-      setIconError("An activity type is required.")
+    if (!selectedIcon || selectedIcon === "") {
+      setIconError("An activity type is required.");
       return;
     }
-    formData.activity = selectedIcon
+    formData.activity = selectedIcon;
     closeModal(formData);
     reset({
       description: "",
-      activity: ""
+      activity: "",
     });
   };
 
@@ -82,9 +82,7 @@ export default function BeforeYouStardActivityModal({
               }}
               render={({ field: { onChange, onBlur, value } }) => (
                 <>
-                  <Text style={styles.activityTitle}>
-                    Activity Title
-                  </Text>
+                  <Text style={styles.activityTitle}>Activity Title</Text>
                   <TextInput
                     placeholder="A quick run in the park..."
                     onBlur={onBlur}
@@ -99,117 +97,138 @@ export default function BeforeYouStardActivityModal({
             {errors.description && (
               <Text style={styles.errorText}>A description is required</Text>
             )}
-            <View style={{
-              backgroundColor: globalColors.primaryLightBlue,
-              borderRadius: 10,
-              height: 120,
-              marginTop: 10
-            }}>
-              <Text style={{
-                textAlign: "center",
+            <View
+              style={{
+                backgroundColor: globalColors.primaryLightBlue,
+                borderRadius: 10,
+                height: 120,
                 marginTop: 10,
-                marginBottom: 10,
-                fontWeight: "bold",
-                color: globalColors.primaryDarkBlue,
-                fontSize: 16
-              }}>
+              }}
+            >
+              <Text
+                style={{
+                  textAlign: "center",
+                  marginTop: 10,
+                  marginBottom: 10,
+                  fontWeight: "bold",
+                  color: globalColors.primaryDarkBlue,
+                  fontSize: 16,
+                }}
+              >
                 Choose an Activity
               </Text>
               <View style={styles.container}>
-                <View
-                  style={[
-                    styles.iconWrapper,
-                  ]}
-                >
-                  <Pressable onPress={() => {
-                    handleIconPress('Running')
-                    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-                  }}>
-                    <View style={
-                      isIconSelected('Running') && styles.iconContainer
-                    }>
-                      <MaterialCommunityIcons name="run" size={30} color="black" />
+                <View style={[styles.iconWrapper]}>
+                  <Pressable
+                    onPress={() => {
+                      handleIconPress("Running");
+                      Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+                    }}
+                  >
+                    <View
+                      style={isIconSelected("Running") && styles.iconContainer}
+                    >
+                      <MaterialCommunityIcons
+                        name="run"
+                        size={30}
+                        color="black"
+                      />
                     </View>
                   </Pressable>
                 </View>
-                <View
-                  style={[
-                    styles.iconWrapper,
-
-                  ]}
-                >
-                  <Pressable onPress={() => {
-                    handleIconPress('Cycling')
-                    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-                  }}>
-                    <View style={
-                      isIconSelected('Cycling') && styles.iconContainer
-                    }>
-                      <MaterialCommunityIcons name="bike" size={30} color="black" />
+                <View style={[styles.iconWrapper]}>
+                  <Pressable
+                    onPress={() => {
+                      handleIconPress("Cycling");
+                      Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+                    }}
+                  >
+                    <View
+                      style={isIconSelected("Cycling") && styles.iconContainer}
+                    >
+                      <MaterialCommunityIcons
+                        name="bike"
+                        size={30}
+                        color="black"
+                      />
                     </View>
                   </Pressable>
                 </View>
-                <View
-                  style={[
-                    styles.iconWrapper,
-                  ]}
-                >
-                  <Pressable onPress={() => {
-                    handleIconPress('Walking')
-                    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-                  }}>
-                    <View style={
-                      isIconSelected('Walking') && styles.iconContainer
-                    }>
-                      <MaterialCommunityIcons name="walk" size={30} color="black" />
+                <View style={[styles.iconWrapper]}>
+                  <Pressable
+                    onPress={() => {
+                      handleIconPress("Walking");
+                      Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+                    }}
+                  >
+                    <View
+                      style={isIconSelected("Walking") && styles.iconContainer}
+                    >
+                      <MaterialCommunityIcons
+                        name="walk"
+                        size={30}
+                        color="black"
+                      />
                     </View>
                   </Pressable>
                 </View>
-                <View
-                  style={[
-                    styles.iconWrapper,
-                  ]}
-                >
-                  <Pressable onPress={() => {
-                    handleIconPress('Hiking')
-                    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-                  }}>
-                    <View style={
-                      isIconSelected('Hiking') && styles.iconContainer
-                    }>
-                      <MaterialCommunityIcons name="hiking" size={30} color="black" />
+                <View style={[styles.iconWrapper]}>
+                  <Pressable
+                    onPress={() => {
+                      handleIconPress("Hiking");
+                      Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+                    }}
+                  >
+                    <View
+                      style={isIconSelected("Hiking") && styles.iconContainer}
+                    >
+                      <MaterialCommunityIcons
+                        name="hiking"
+                        size={30}
+                        color="black"
+                      />
                     </View>
                   </Pressable>
                 </View>
               </View>
             </View>
             <View>
-              {iconError !== "" && <>
-                <Text style={{
-                  color: "red"
-                }}>
-                  {iconError}
-                </Text>
-              </>}
+              {iconError !== "" && (
+                <>
+                  <Text
+                    style={{
+                      color: "red",
+                    }}
+                  >
+                    {iconError}
+                  </Text>
+                </>
+              )}
             </View>
 
-            <View style={{
-              flexDirection: "column",
-              justifyContent: "center",
-              marginTop: 20,
-              gap: 10
-            }}>
+            <View
+              style={{
+                flexDirection: "column",
+                justifyContent: "center",
+                marginTop: 20,
+                gap: 10,
+              }}
+            >
               <Button mode="contained" onPress={handleSubmit(onSubmit)}>
                 Start
               </Button>
-              <Button mode="contained-tonal" onPress={() => closeModal({
-                description: undefined,
-                activity: undefined,
-              })}>
+              <Button
+                mode="contained-tonal"
+                onPress={() =>
+                  closeModal({
+                    description: undefined,
+                    activity: undefined,
+                  })
+                }
+              >
                 Cancel
               </Button>
             </View>
-
           </View>
         </View>
       </View>
@@ -241,19 +260,19 @@ const styles = StyleSheet.create({
     fontSize: 20,
     marginBottom: 10,
     textAlign: "center",
-    color: globalColors.primaryDarkBlue
+    color: globalColors.primaryDarkBlue,
   },
   activityTitle: {
     marginBottom: 10,
     fontWeight: "bold",
-    color: globalColors.primaryDarkBlue
+    color: globalColors.primaryDarkBlue,
   },
   descriptionInput: {
     backgroundColor: globalColors.primaryLightBlue,
     paddingLeft: 10,
     borderRadius: 5,
     padding: 5,
-    color: globalColors.primaryDarkBlue
+    color: globalColors.primaryDarkBlue,
   },
   errorText: {
     color: "red",
@@ -270,7 +289,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     borderRadius: 10,
     padding: 10,
-    backgroundColor: globalColors.primaryLightBlue
+    backgroundColor: globalColors.primaryLightBlue,
   },
   cancelBtn: {
     marginTop: 15,
@@ -278,25 +297,24 @@ const styles = StyleSheet.create({
     alignItems: "center",
     borderRadius: 10,
     padding: 10,
-    backgroundColor: globalColors.primaryLightBlue
+    backgroundColor: globalColors.primaryLightBlue,
   },
   container: {
-    flexDirection: 'row',
+    flexDirection: "row",
     paddingHorizontal: 16,
     marginTop: 10,
-
   },
   iconWrapper: {
     flex: 1,
-    alignItems: 'center',
+    alignItems: "center",
     justifyContent: "center",
   },
   iconContainer: {
     width: 40,
     height: 40,
     borderRadius: 40,
-    backgroundColor: 'white',
-    alignItems: 'center',
-    justifyContent: 'center',
-  }
+    backgroundColor: "white",
+    alignItems: "center",
+    justifyContent: "center",
+  },
 });

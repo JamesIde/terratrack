@@ -14,11 +14,14 @@ import { recordingStore } from "../../../stores/recordingStore";
 import { activityStore } from "../../../stores/activityStore";
 import { Position } from "@rnmapbox/maps/lib/typescript/types/Position";
 import * as Turf from "@turf/turf";
-import { LocationObject, Accuracy, getCurrentPositionAsync } from 'expo-location';
+import {
+  LocationObject,
+  Accuracy,
+  getCurrentPositionAsync,
+} from "expo-location";
 
 import SelectedShapeSource from "./SelectedShapeSource";
 import Recording from "../../buttons/Recording";
-import StatOverlay from "../overlay/statOverlay";
 import FocusCurrentPosition from "../../buttons/FocusCurrentPosition";
 import MapStyleButton from "../../buttons/MapStyle";
 import CurrentShapeSource from "./CurrentShapeSource";
@@ -33,21 +36,18 @@ export default function Map() {
   const mapRef = useRef<MapView>(null);
   const mapStyle = mapStore((state) => state.mapStyle);
   const [intervalId, setIntervalId] = useState<NodeJS.Timeout | null>(null);
-  const [
-    recordingState,
-    updateLocation,
-  ] = recordingStore((state) => [
+  const [recordingState, updateLocation] = recordingStore((state) => [
     state.recordingState,
     state.updateLocation,
   ]);
   const [followUser, setFollowUser] = trackingStore((state) => [
     state.followUser,
-    state.setFollowUser
+    state.setFollowUser,
   ]);
   const selectedActivity = activityStore((state) => state.selectedActivity);
 
-  const zoomToActivity = () => {
-    let screenHeight = (Dimensions.get("window").height)
+  const zoomToActivity = async () => {
+    let screenHeight = Dimensions.get("window").height;
     let ne: Position = [0, 0];
     let sw: Position = [0, 0];
     if (selectedActivity) {
@@ -55,27 +55,29 @@ export default function Map() {
       let bbox = Turf.bbox(coords);
       ne = [bbox[2], bbox[3]];
       sw = [bbox[0], bbox[1]];
-      cameraRef.current?.fitBounds(ne, sw, [
-        screenHeight * 0.1,
-        0,
-        screenHeight * 0.6,
-        0,
-      ], 100);
-
+      cameraRef.current?.fitBounds(
+        ne,
+        sw,
+        [screenHeight * 0.1, 0, screenHeight * 0.6, 0],
+        100
+      );
     } else {
-      setFollowUser(false)
-      if (!userLocation) { return }
-      setTimeout(() => {
-        cameraRef.current?.fitBounds(
-          [userLocation!.coords.longitude, userLocation!.coords.latitude],
-          [userLocation!.coords.longitude, userLocation!.coords.latitude],
-          100, 500
-        )
-      }, 100)
+      setFollowUser(false);
+      await getCoords().then((location) => {
+        setTimeout(() => {
+          cameraRef.current?.fitBounds(
+            [location.coords.longitude, location.coords.latitude],
+            [location.coords.longitude, location.coords.latitude],
+            100,
+            500
+          );
+        }, 100);
+      });
     }
   };
 
   useEffect(() => {
+    console.log(!!selectedActivity);
     zoomToActivity();
 
     if (recordingState.isRecording) {
@@ -93,11 +95,10 @@ export default function Map() {
     // Cleanup the interval when the component unmounts
   }, [selectedActivity, recordingState]);
 
-
   const getCoords = async () => {
     return await getCurrentPositionAsync({
       accuracy: Accuracy.BestForNavigation,
-    })
+    });
   };
 
   return (
@@ -133,12 +134,14 @@ export default function Map() {
         <SelectedShapeSource />
       </Mapbox.MapView>
       <>
-        {!selectedActivity && <>
-          <FocusCurrentPosition />
-          <MapStyleButton />
-          <StatOverlay />
-          <Recording />
-        </>}
+        {!selectedActivity && (
+          <>
+            <FocusCurrentPosition />
+            <MapStyleButton />
+            {/* <StatOverlay /> */}
+            <Recording />
+          </>
+        )}
       </>
     </>
   );
@@ -161,4 +164,3 @@ export const styles = StyleSheet.create({
     backgroundColor: "#eee",
   },
 });
-

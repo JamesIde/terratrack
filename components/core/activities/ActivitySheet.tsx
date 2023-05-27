@@ -2,7 +2,10 @@ import { Text, StyleSheet, View } from "react-native";
 import BottomSheet, { BottomSheetFlatList } from "@gorhom/bottom-sheet";
 import { useMemo, useCallback, useState, useEffect, useRef } from "react";
 import { Dimensions } from "react-native";
-import { deleteActivity, getActivities } from "../../../services/activity.service";
+import {
+  deleteActivity,
+  getActivities,
+} from "../../../services/activity.service";
 import { Activity } from "../../../@types/activity";
 import { ShowAlert } from "../../../utils/alert/alert";
 import { activityStore } from "../../../stores/activityStore";
@@ -20,9 +23,9 @@ export default function ActivitySheet() {
   // Need to read up on useCallback and useMemo too. Been a while and don't fully understand whats happening here.
   const sheetRef = useRef<BottomSheet>(null);
   const [deleteModalVisible, setDeleteModalVisible] = useState(false);
-  const [deleteActivityKey, setDeleteActivityKey] = useState('');
+  const [deleteActivityKey, setDeleteActivityKey] = useState("");
   const [fetchedData, setFetchedData] = useState<Activity[]>([]);
-  const selectedSort = sortStore(state => state.selectedSort)
+  const selectedSort = sortStore((state) => state.selectedSort);
   const [selectedActivity, setSelectedActivity] = activityStore((state) => [
     state.selectedActivity,
     state.setSelectedActivity,
@@ -43,11 +46,13 @@ export default function ActivitySheet() {
 
   useEffect(() => {
     fetchData();
-    console.log(`use eff re-render`);
   }, []);
 
   const data = useMemo(() => {
-    return processActivitySorting(fetchedData, selectedSort).reverse()
+    console.log(`DATA BEFORE SORTING: ${JSON.stringify(fetchedData)}`);
+    let sort = processActivitySorting(fetchedData, selectedSort).reverse();
+    console.log(`DATA AFTER SORTING: ${JSON.stringify(sort)}`);
+    return sort;
   }, [fetchedData, selectedSort]);
 
   const snapPoints = useMemo(() => ["5%", "50%", "90%"], []);
@@ -77,10 +82,9 @@ export default function ActivitySheet() {
   };
 
   const removeActivity = async (id: string) => {
-    setDeleteModalVisible(true)
-    setDeleteActivityKey(id)
-  }
-
+    setDeleteModalVisible(true);
+    setDeleteActivityKey(id);
+  };
 
   return (
     <>
@@ -89,15 +93,18 @@ export default function ActivitySheet() {
         onChange={handleSheetChanges}
         ref={sheetRef}
         backgroundStyle={{
-          backgroundColor: globalColors.primaryLightBlue
+          backgroundColor: globalColors.primaryLightBlue,
         }}
       >
         {!selectedActivity ? (
           <>
             <View style={styles.activityContainer}>
-              <View style={{
-                flexDirection: "row-reverse", justifyContent: "space-between"
-              }}>
+              <View
+                style={{
+                  flexDirection: "row-reverse",
+                  justifyContent: "space-between",
+                }}
+              >
                 <ActivitySortButton />
                 <ActivitySheetHeader />
               </View>
@@ -131,13 +138,12 @@ export default function ActivitySheet() {
         modalVisible={deleteModalVisible}
         closeModal={async (shouldDelete) => {
           if (shouldDelete) {
-            await deleteActivity(deleteActivityKey).then(() => fetchData())
+            await deleteActivity(deleteActivityKey).then(() => fetchData());
           }
           setDeleteModalVisible(false);
         }}
       />
     </>
-
   );
 }
 

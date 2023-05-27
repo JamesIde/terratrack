@@ -3,7 +3,7 @@
  */
 export function processDistance(distance: number) {
   if (distance < 1) {
-    return `${distance.toFixed(2)} meters`;
+    return `${distance.toFixed(0)} meters`;
   }
 
   if (distance < 1000) {
