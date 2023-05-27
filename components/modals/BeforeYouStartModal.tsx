@@ -119,76 +119,76 @@ export default function BeforeYouStardActivityModal({
               </Text>
               <View style={styles.container}>
                 <View style={[styles.iconWrapper]}>
-                  <Pressable
-                    onPress={() => {
-                      handleIconPress("Running");
-                      Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-                    }}
+                  <View
+                    style={isIconSelected("Running") && styles.iconContainer}
                   >
-                    <View
-                      style={isIconSelected("Running") && styles.iconContainer}
+                    <Pressable
+                      onPress={() => {
+                        handleIconPress("Running");
+                        Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+                      }}
                     >
                       <MaterialCommunityIcons
                         name="run"
                         size={30}
                         color="black"
                       />
-                    </View>
-                  </Pressable>
+                    </Pressable>
+                  </View>
                 </View>
                 <View style={[styles.iconWrapper]}>
-                  <Pressable
-                    onPress={() => {
-                      handleIconPress("Cycling");
-                      Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-                    }}
+                  <View
+                    style={isIconSelected("Cycling") && styles.iconContainer}
                   >
-                    <View
-                      style={isIconSelected("Cycling") && styles.iconContainer}
+                    <Pressable
+                      onPress={() => {
+                        handleIconPress("Cycling");
+                        Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+                      }}
                     >
                       <MaterialCommunityIcons
                         name="bike"
                         size={30}
                         color="black"
                       />
-                    </View>
-                  </Pressable>
+                    </Pressable>
+                  </View>
                 </View>
                 <View style={[styles.iconWrapper]}>
-                  <Pressable
-                    onPress={() => {
-                      handleIconPress("Walking");
-                      Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-                    }}
+                  <View
+                    style={isIconSelected("Walking") && styles.iconContainer}
                   >
-                    <View
-                      style={isIconSelected("Walking") && styles.iconContainer}
+                    <Pressable
+                      onPress={() => {
+                        handleIconPress("Walking");
+                        Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+                      }}
                     >
                       <MaterialCommunityIcons
                         name="walk"
                         size={30}
                         color="black"
                       />
-                    </View>
-                  </Pressable>
+                    </Pressable>
+                  </View>
                 </View>
                 <View style={[styles.iconWrapper]}>
-                  <Pressable
-                    onPress={() => {
-                      handleIconPress("Hiking");
-                      Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-                    }}
+                  <View
+                    style={isIconSelected("Hiking") && styles.iconContainer}
                   >
-                    <View
-                      style={isIconSelected("Hiking") && styles.iconContainer}
+                    <Pressable
+                      onPress={() => {
+                        handleIconPress("Hiking");
+                        Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+                      }}
                     >
                       <MaterialCommunityIcons
                         name="hiking"
                         size={30}
                         color="black"
                       />
-                    </View>
-                  </Pressable>
+                    </Pressable>
+                  </View>
                 </View>
               </View>
             </View>
