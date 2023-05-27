@@ -16,6 +16,7 @@ export default function StatOverlay({
   recordingState: RecordingState;
   locations: LocationObjectCoords[];
 }) {
+  console.log(processShortDistance(distance));
   const elevation = recordingStore((state) => state.currentElevation);
   return (
     <View style={styles.background}>

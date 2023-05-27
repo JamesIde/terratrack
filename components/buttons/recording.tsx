@@ -13,7 +13,7 @@ import { trackingStore } from "../../stores/trackingStore";
 import BeforeYouStardActivityModal from "../modals/BeforeYouStartModal";
 import uuid from "react-native-uuid";
 import StatOverlay from "../core/overlay/StatOverlay";
-
+// TODO the elapsed time is still broken
 // This component is probably doing too much. Its probably the worst code I've ever written.
 export default function Recording() {
   const [
@@ -63,20 +63,6 @@ export default function Recording() {
           ...prevState,
           elapsedTime: new Date(elapsed),
         }));
-        if (locations.length === 2) {
-          // get first two coords in the arr
-          let coords = transformCoord(locations[0], locations[1]);
-          updateDistance(coords.a, coords.b);
-        } else if (locations.length > 2) {
-          // get the last known coord plus latest coord from location update
-          let coords = transformCoord(
-            locations[locations.length - 2],
-            locations[locations.length - 1]
-          );
-          console.log(`COORDS OUPTUT ${JSON.stringify(coords)}`);
-          updateDistance(coords.a, coords.b);
-          updateElevation(locations[locations.length - 1].altitude!);
-        }
       }, 1000);
       if (!followUser) {
         setFollowUser(true);
@@ -121,6 +107,7 @@ export default function Recording() {
   const stopRecording = async () => {
     // Need id as the activity object for key-extractor in flat list. id is also the key in async storage kv
     let id: string = uuid.v4().toString();
+    console.log(`total seconds ${timeData.elapsedTime.getSeconds()}`);
     let currentActivity: Activity = {
       description: preActivityForm.description,
       type: preActivityForm.activityType,
@@ -167,8 +154,6 @@ export default function Recording() {
     // Close it anyway (could be a cancel + undefined passed in as 'close')
     setModalVisible(false);
   }
-  console.log(locations.length);
-
   const renderIcons = () => {
     if (recordingState.isRecording) {
       // Show pause and stop

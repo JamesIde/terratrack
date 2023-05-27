@@ -14,30 +14,42 @@ import { recordingStore } from "../../../stores/recordingStore";
 import { activityStore } from "../../../stores/activityStore";
 import { Position } from "@rnmapbox/maps/lib/typescript/types/Position";
 import * as Turf from "@turf/turf";
-import {
-  LocationObject,
-  Accuracy,
-  getCurrentPositionAsync,
-} from "expo-location";
+import * as Location from "expo-location";
+import * as TaskManager from "expo-task-manager";
 
 import SelectedShapeSource from "./SelectedShapeSource";
 import Recording from "../../buttons/Recording";
 import FocusCurrentPosition from "../../buttons/FocusCurrentPosition";
 import MapStyleButton from "../../buttons/MapStyle";
 import CurrentShapeSource from "./CurrentShapeSource";
+import { ExpoLocation } from "../../../@types/expoLocation";
+import { transformCoord } from "../../../utils/transformers/processCoord";
 /**
  * The coordinates for point annotation follow [longitude, latitude]. Longitude is the bigger number (138), latitude is the smaller number (-35).
  */
 Mapbox.setAccessToken(CONFIG.MAP.ACCESS_TOKEN);
+
+const TASK_FETCH_LOCATION = "TASK_FETCH_LOCATION";
+
 export default function Map() {
   // This allows the camera to move back to user location after selected activity deselection
-  const [userLocation, setUserLocation] = useState<LocationObject | null>(null);
+  const [userLocation, setUserLocation] =
+    useState<Location.LocationObject | null>(null);
   const cameraRef = useRef<CameraRef>(null);
   const mapRef = useRef<MapView>(null);
   const mapStyle = mapStore((state) => state.mapStyle);
   const [intervalId, setIntervalId] = useState<NodeJS.Timeout | null>(null);
-  const [recordingState, updateLocation] = recordingStore((state) => [
+  const [
+    recordingState,
+    locations,
+    updateDistance,
+    updateElevation,
+    updateLocation,
+  ] = recordingStore((state) => [
     state.recordingState,
+    state.locations,
+    state.updateDistance,
+    state.updateElevation,
     state.updateLocation,
   ]);
   const [followUser, setFollowUser] = trackingStore((state) => [
@@ -76,27 +88,63 @@ export default function Map() {
     }
   };
 
-  useEffect(() => {
-    zoomToActivity();
+  TaskManager.defineTask(TASK_FETCH_LOCATION, ({ data, error }) => {
+    if (error) {
+      // check `error.message` for more details.
+      return;
+    }
 
     if (recordingState.isRecording) {
-      const interval = setInterval(async () => {
-        let location = await getCoords();
-        updateLocation(location.coords);
-      }, 3000);
-      setIntervalId(interval);
+      let location = data as ExpoLocation;
+      updateLocation(location.locations[0].coords);
+      console.log(`loca updateatata ${location.locations[0].coords.latitude}`);
+      if (locations.length === 2) {
+        // get first two coords in the arr
+        let coords = transformCoord(locations[0], locations[1]);
+        updateDistance(coords.a, coords.b);
+      } else if (locations.length > 2) {
+        // get the last known coord plus latest coord from location update
+        let coords = transformCoord(
+          locations[locations.length - 2],
+          locations[locations.length - 1]
+        );
+        console.log(`COORDS OUPTUT ${JSON.stringify(coords)}`);
+        updateDistance(coords.a, coords.b);
+        updateElevation(locations[locations.length - 1].altitude!);
+      }
+    } else {
+      console.log(`not recording, but we got a new update`);
+    }
+  });
+
+  useEffect(() => {
+    zoomToActivity();
+    if (recordingState.isRecording) {
+      Location.startLocationUpdatesAsync(TASK_FETCH_LOCATION, {
+        accuracy: Location.Accuracy.BestForNavigation,
+        distanceInterval: 2,
+        foregroundService: {
+          notificationTitle: "Using your location",
+          notificationBody:
+            "To turn off, go back to the app and switch something off.",
+        },
+        showsBackgroundLocationIndicator: true,
+        timeInterval: 1500,
+      });
     }
 
-    if (recordingState.isStopped && intervalId) {
-      clearInterval(intervalId);
-    }
-
+    return () => {
+      Location.stopLocationUpdatesAsync(TASK_FETCH_LOCATION).catch(() => {});
+      console.log(`stopped location updates`);
+      if (recordingState.isStopped && !recordingState.isRecording) {
+      }
+    };
     // Cleanup the interval when the component unmounts
   }, [selectedActivity, recordingState]);
 
   const getCoords = async () => {
-    return await getCurrentPositionAsync({
-      accuracy: Accuracy.BestForNavigation,
+    return await Location.getCurrentPositionAsync({
+      accuracy: Location.Accuracy.BestForNavigation,
     });
   };
 

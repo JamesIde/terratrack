@@ -12,7 +12,6 @@ export default function CurrentShapeSource() {
   ]);
 
   useEffect(() => {
-    console.log(`shape src render`);
     if (locations.length > 1) {
       setShowLine(true);
     }
