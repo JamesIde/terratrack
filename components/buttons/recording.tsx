@@ -1,7 +1,5 @@
-import { View, StyleSheet, Dimensions, Text } from "react-native";
-import { Button, IconButton } from "react-native-paper";
-import { MaterialCommunityIcons } from "@expo/vector-icons";
-import { Ionicons } from "@expo/vector-icons";
+import { View, StyleSheet, Dimensions } from "react-native";
+import { IconButton } from "react-native-paper";
 import { recordingStore } from "../../stores/recordingStore";
 import { RecordingStateEnum } from "../../@types/enum/recordingStateEnum";
 import { useEffect, useState } from "react";

@@ -1,5 +1,4 @@
 import { LocationObjectCoords } from "expo-location";
-import { Coordinate } from "../../@types/coordinates";
 import { HCoord } from "../../@types/haversineCoords";
 
 /**

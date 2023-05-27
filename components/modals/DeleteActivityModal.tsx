@@ -1,11 +1,4 @@
-import {
-  View,
-  Text,
-  Modal,
-  StyleSheet,
-  Pressable,
-  Platform,
-} from "react-native";
+import { View, Text, Modal, StyleSheet } from "react-native";
 import { globalColors } from "../../global/styles/globalColors";
 import { Button } from "react-native-paper";
 export default function DeleteActivityModal({

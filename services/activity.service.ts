@@ -1,7 +1,6 @@
-import AsyncStorage from "@react-native-async-storage/async-storage";
 import { Activity } from "../@types/activity";
-import uuid from "react-native-uuid";
 import { ShowAlert } from "../utils/alert/alert";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 export async function addActivity(activity: Activity, id: string) {
   try {
