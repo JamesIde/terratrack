@@ -5,8 +5,16 @@ import ActivitySheet from "./components/core/activities/ActivitySheet";
 import Map from "./components/core/mapbox/Map";
 import { SafeAreaView } from "react-native-safe-area-context";
 import Mapbox from "@rnmapbox/maps";
+
+import * as Sentry from '@sentry/react-native';
+import { CONFIG } from "./config/config";
+
+Sentry.init({
+  dsn: CONFIG.SENTRY.DSN,
+});
+
 Mapbox.requestAndroidLocationPermissions();
-export default function App() {
+function App() {
   return (
     <SafeAreaView style={{ height: "100%" }}>
       <StatusBar style="auto" />
@@ -17,3 +25,5 @@ export default function App() {
     </SafeAreaView>
   );
 }
+
+export default Sentry.wrap(App)
