@@ -1,4 +1,5 @@
 import { View, StyleSheet, Dimensions, Text } from "react-native";
+import { Button, IconButton } from "react-native-paper";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { Ionicons } from "@expo/vector-icons";
 import { recordingStore } from "../../stores/recordingStore";
@@ -168,22 +169,23 @@ export default function Recording() {
     // Close it anyway (could be a cancel + undefined passed in as 'close')
     setModalVisible(false);
   }
+  console.log(locations.length);
 
   const renderIcons = () => {
     if (recordingState.isRecording) {
       // Show pause and stop
       return (
         <>
-          <Ionicons
-            name="stop-circle"
+          <IconButton
+            icon="stop-circle"
             size={45}
-            color="grey"
+            iconColor="grey"
             onPress={stopRecording}
           />
-          <Ionicons
-            name="pause-circle"
+          <IconButton
+            icon="pause-circle"
             size={45}
-            color="red"
+            iconColor="red"
             onPress={pauseRecording}
           />
         </>
@@ -192,16 +194,16 @@ export default function Recording() {
       // Show resume (start) and stop
       return (
         <>
-          <Ionicons
-            name="stop-circle"
+          <IconButton
+            icon="stop-circle"
             size={45}
-            color="grey"
+            iconColor="grey"
             onPress={stopRecording}
           />
-          <MaterialCommunityIcons
-            name="record-circle"
+          <IconButton
+            icon="record-circle"
             size={45}
-            color="red"
+            iconColor="red"
             onPress={resumeRecording}
           />
         </>
@@ -210,11 +212,11 @@ export default function Recording() {
       // Default state when not recording or paused is to just show the start button
       return (
         <>
-          <MaterialCommunityIcons
-            name="record-circle"
+          <IconButton
+            icon="record-circle"
             size={45}
-            color="red"
             onPress={startRecording}
+            iconColor="red"
           />
         </>
       );
