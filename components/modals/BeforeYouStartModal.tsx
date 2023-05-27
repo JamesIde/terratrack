@@ -13,6 +13,7 @@ import { globalColors } from "../../global/styles/globalColors";
 import { MaterialCommunityIcons } from "@expo/vector-icons"
 import React, { useState } from "react";
 import { Button } from 'react-native-paper';
+import * as Haptics from 'expo-haptics';
 export default function BeforeYouStardActivityModal({
   modalVisible,
   closeModal,
@@ -33,7 +34,7 @@ export default function BeforeYouStardActivityModal({
   });
 
   const [iconError, setIconError] = useState('')
-  const [selectedIcon, setSelectedIcon] = useState('walk');
+  const [selectedIcon, setSelectedIcon] = useState('Walk');
 
   const handleIconPress = (iconName: string) => {
     setSelectedIcon(iconName);
@@ -120,9 +121,12 @@ export default function BeforeYouStardActivityModal({
                     styles.iconWrapper,
                   ]}
                 >
-                  <Pressable onPress={() => handleIconPress('run')}>
+                  <Pressable onPress={() => {
+                    handleIconPress('Running')
+                    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+                  }}>
                     <View style={
-                      isIconSelected('run') && styles.iconContainer
+                      isIconSelected('Running') && styles.iconContainer
                     }>
                       <MaterialCommunityIcons name="run" size={30} color="black" />
                     </View>
@@ -134,9 +138,12 @@ export default function BeforeYouStardActivityModal({
 
                   ]}
                 >
-                  <Pressable onPress={() => handleIconPress('bike')}>
+                  <Pressable onPress={() => {
+                    handleIconPress('Cycling')
+                    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+                  }}>
                     <View style={
-                      isIconSelected('bike') && styles.iconContainer
+                      isIconSelected('Cycling') && styles.iconContainer
                     }>
                       <MaterialCommunityIcons name="bike" size={30} color="black" />
                     </View>
@@ -147,9 +154,12 @@ export default function BeforeYouStardActivityModal({
                     styles.iconWrapper,
                   ]}
                 >
-                  <Pressable onPress={() => handleIconPress('walk')}>
+                  <Pressable onPress={() => {
+                    handleIconPress('Walking')
+                    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+                  }}>
                     <View style={
-                      isIconSelected('walk') && styles.iconContainer
+                      isIconSelected('Walking') && styles.iconContainer
                     }>
                       <MaterialCommunityIcons name="walk" size={30} color="black" />
                     </View>
@@ -160,9 +170,12 @@ export default function BeforeYouStardActivityModal({
                     styles.iconWrapper,
                   ]}
                 >
-                  <Pressable onPress={() => handleIconPress('hiking')}>
+                  <Pressable onPress={() => {
+                    handleIconPress('Hiking')
+                    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+                  }}>
                     <View style={
-                      isIconSelected('hiking') && styles.iconContainer
+                      isIconSelected('Hiking') && styles.iconContainer
                     }>
                       <MaterialCommunityIcons name="hiking" size={30} color="black" />
                     </View>
