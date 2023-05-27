@@ -1,6 +1,6 @@
 import { create } from "zustand";
 import { RecordingStateEnum } from "../@types/enum/recordingStateEnum";
-import { Coordinate } from "../@types/coordinates";
+import { RecordingState } from "../@types/recordingState";
 import { haversineDistance } from "../utils/algo/haversineDistance";
 import { HCoord } from "../@types/haversineCoords";
 import { activityTypeEnum } from "../@types/enum/activityTypeEnum";
@@ -11,12 +11,9 @@ export const recordingStore = create<{
   elevationArr: Array<number>;
   distance: number;
   currentActivity: string;
+  currentElevation: number;
   showLine: boolean;
-  recordingState: {
-    isRecording: boolean;
-    isPaused: boolean;
-    isStopped: boolean;
-  };
+  recordingState: RecordingState;
   handleRecording: (action: RecordingStateEnum) => void;
   updateLocation: (location: Location.LocationObjectCoords) => void;
   updateElevation: (elevation: number) => void;
@@ -27,6 +24,7 @@ export const recordingStore = create<{
   elevationArr: [],
   distance: 0,
   currentActivity: activityTypeEnum.WALKING,
+  currentElevation: 0,
   showLine: false,
   recordingState: {
     isRecording: false,
@@ -78,6 +76,7 @@ export const recordingStore = create<{
   updateElevation: (elevation: number) => {
     set((state) => ({
       elevationArr: [...state.elevationArr, elevation],
+      currentElevation: elevation,
     }));
   },
   setShowLine: (show: boolean) => {

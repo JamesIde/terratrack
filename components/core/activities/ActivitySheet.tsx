@@ -49,9 +49,7 @@ export default function ActivitySheet() {
   }, []);
 
   const data = useMemo(() => {
-    console.log(`DATA BEFORE SORTING: ${JSON.stringify(fetchedData)}`);
     let sort = processActivitySorting(fetchedData, selectedSort).reverse();
-    console.log(`DATA AFTER SORTING: ${JSON.stringify(sort)}`);
     return sort;
   }, [fetchedData, selectedSort]);
 

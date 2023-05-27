@@ -77,7 +77,6 @@ export default function Map() {
   };
 
   useEffect(() => {
-    console.log(!!selectedActivity);
     zoomToActivity();
 
     if (recordingState.isRecording) {

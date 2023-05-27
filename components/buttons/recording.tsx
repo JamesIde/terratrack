@@ -4,11 +4,8 @@ import { Ionicons } from "@expo/vector-icons";
 import { recordingStore } from "../../stores/recordingStore";
 import { RecordingStateEnum } from "../../@types/enum/recordingStateEnum";
 import { useEffect, useState } from "react";
-import { activityTypeEnum } from "../../@types/enum/activityTypeEnum";
 import { Activity, PreActivity } from "../../@types/activity";
 import { processCoordinates } from "../../utils/transformers/processCoordinates";
-import { processNewDate } from "../../utils/transformers/processDate";
-import { processTime } from "../../utils/transformers/processTime";
 import { addActivity } from "../../services/activity.service";
 import { getRandomColor } from "../../utils/misc/getRandomColor";
 import { processElevation } from "../../utils/transformers/processElevation";
@@ -16,21 +13,31 @@ import { transformCoord } from "../../utils/transformers/processCoord";
 import { trackingStore } from "../../stores/trackingStore";
 import BeforeYouStardActivityModal from "../modals/BeforeYouStartModal";
 import uuid from "react-native-uuid";
+import StatOverlay from "../core/overlay/StatOverlay";
 
 // This component is probably doing too much. Its probably the worst code I've ever written.
 export default function Recording() {
-  const [locations, elevationArr, distance, recordingState, handleRecording,
-    updateDistance, updateElevation] =
-    recordingStore((state) => [
-      state.locations,
-      state.elevationArr,
-      state.distance,
-      state.recordingState,
-      state.handleRecording,
-      state.updateDistance,
-      state.updateElevation,
-    ]);
-  const [followUser, setFollowUser] = trackingStore(state => [state.followUser, state.setFollowUser])
+  const [
+    locations,
+    elevationArr,
+    distance,
+    recordingState,
+    handleRecording,
+    updateDistance,
+    updateElevation,
+  ] = recordingStore((state) => [
+    state.locations,
+    state.elevationArr,
+    state.distance,
+    state.recordingState,
+    state.handleRecording,
+    state.updateDistance,
+    state.updateElevation,
+  ]);
+  const [followUser, setFollowUser] = trackingStore((state) => [
+    state.followUser,
+    state.setFollowUser,
+  ]);
   const [timeData, setTimeData] = useState({
     elapsedTime: new Date(0),
     startTime: new Date(0),
@@ -63,21 +70,29 @@ export default function Recording() {
           updateDistance(coords.a, coords.b);
         } else if (locations.length > 2) {
           // get the last known coord plus latest coord from location update
-          let coords = transformCoord(locations[locations.length - 2], locations[locations.length - 1]);
-          console.log(`COORDS OUPTUT ${JSON.stringify(coords)}`)
+          let coords = transformCoord(
+            locations[locations.length - 2],
+            locations[locations.length - 1]
+          );
+          console.log(`COORDS OUPTUT ${JSON.stringify(coords)}`);
           updateDistance(coords.a, coords.b);
           updateElevation(locations[locations.length - 1].altitude!);
         }
       }, 1000);
       if (!followUser) {
-        setFollowUser(true)
+        setFollowUser(true);
       }
     }
 
     return () => {
       clearInterval(interval);
     };
-  }, [recordingState.isRecording, timeData.startTime, timeData.pausedTime, locations]);
+  }, [
+    recordingState.isRecording,
+    timeData.startTime,
+    timeData.pausedTime,
+    locations,
+  ]);
 
   const startRecording = () => {
     setModalVisible(true);
@@ -112,10 +127,9 @@ export default function Recording() {
       type: preActivityForm.activityType,
       coordinates: processCoordinates(locations),
       distance: distance,
-      // TODO fix this function. Not returning time correctly
-      duration: processTime(timeData.elapsedTime.getSeconds()),
-      startTime: processNewDate(timeData.startTime),
-      endTime: processNewDate(new Date()),
+      duration: timeData.elapsedTime.getSeconds(),
+      startTime: timeData.startTime,
+      endTime: new Date(),
       metadata: {
         color: getRandomColor(),
       },
@@ -209,26 +223,26 @@ export default function Recording() {
 
   return (
     <>
+      <StatOverlay
+        distance={distance}
+        timeInSeconds={timeData.elapsedTime.getSeconds()}
+        recordingState={recordingState}
+        locations={locations}
+      />
       <BeforeYouStardActivityModal
         modalVisible={modalVisible}
         closeModal={closeModal}
       />
-      <View style={styles.container}>
-        <Text>time: {timeData.elapsedTime.getTime()} in seconds</Text>
-        <Text>locations: {locations.length}</Text>
-        <Text>distance: {distance}</Text>
-        {renderIcons()}
-      </View>
+      <View style={styles.container}>{renderIcons()}</View>
     </>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: "white",
     position: "absolute",
     bottom: Dimensions.get("window").height * 0.05,
-    flexDirection: "column",
+    flexDirection: "row",
     right: 0,
     marginRight: Dimensions.get("window").width * 0.05,
     gap: 2,

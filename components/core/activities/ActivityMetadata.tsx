@@ -4,6 +4,7 @@ import { Activity } from "../../../@types/activity";
 import { processDistance } from "../../../utils/transformers/processDistance";
 import { formatElevation } from "../../../utils/transformers/processElevation";
 export default function ActivityMetadata({ activity }: { activity: Activity }) {
+  // This could easily be dynamic. Why not try it?
   return (
     <View style={styles.container}>
       <View style={styles.gridItem}>

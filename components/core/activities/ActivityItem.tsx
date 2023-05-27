@@ -3,15 +3,16 @@ import { Activity } from "../../../@types/activity";
 import { globalColors } from "../../../global/styles/globalColors";
 import { processDistance } from "../../../utils/transformers/processDistance";
 import { Ionicons } from "@expo/vector-icons";
+import { formatTime } from "../../../utils/transformers/processTime";
 
 export default function ActivityItem({
   activity,
   onActivityClick,
-  onActivityLongPress
+  onActivityLongPress,
 }: {
   activity: Activity;
   onActivityClick: (activity: Activity) => void;
-  onActivityLongPress: (id: string) => void
+  onActivityLongPress: (id: string) => void;
 }) {
   return (
     <Pressable
@@ -48,11 +49,10 @@ export default function ActivityItem({
             />
           </View>
         </View>
-
         <View>
           <Text style={styles.metadata}>
             {activity.type} - {processDistance(activity.distance)} -{" "}
-            {activity.duration}
+            {formatTime(activity.duration)}
           </Text>
         </View>
       </View>

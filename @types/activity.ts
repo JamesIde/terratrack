@@ -7,9 +7,9 @@ export interface PreActivity {
 export interface Activity {
   description: string;
   type: string;
-  duration: string;
-  startTime: string;
-  endTime: string;
+  duration: number;
+  startTime: Date;
+  endTime: Date;
   distance: number;
   coordinates: Position[];
   id: string;
