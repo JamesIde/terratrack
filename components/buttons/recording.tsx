@@ -11,20 +11,26 @@ import { processNewDate } from "../../utils/transformers/processDate";
 import { processTime } from "../../utils/transformers/processTime";
 import { addActivity } from "../../services/activity.service";
 import { getRandomColor } from "../../utils/misc/getRandomColor";
+import { processElevation } from "../../utils/transformers/processElevation";
+import { transformCoord } from "../../utils/transformers/processCoord";
+import { trackingStore } from "../../stores/trackingStore";
 import BeforeYouStardActivityModal from "../modals/BeforeYouStartModal";
 import uuid from "react-native-uuid";
-import { processElevation } from "../../utils/transformers/processElevation";
 
-// This component is probably doing too much
+// This component is probably doing too much. Its probably the worst code I've ever written.
 export default function Recording() {
-  const [locations, elevationArr, distance, recordingState, handleRecording] =
+  const [locations, elevationArr, distance, recordingState, handleRecording,
+    updateDistance, updateElevation] =
     recordingStore((state) => [
       state.locations,
       state.elevationArr,
       state.distance,
       state.recordingState,
       state.handleRecording,
+      state.updateDistance,
+      state.updateElevation,
     ]);
+  const [followUser, setFollowUser] = trackingStore(state => [state.followUser, state.setFollowUser])
   const [timeData, setTimeData] = useState({
     elapsedTime: new Date(0),
     startTime: new Date(0),
@@ -51,13 +57,27 @@ export default function Recording() {
           ...prevState,
           elapsedTime: new Date(elapsed),
         }));
+        if (locations.length === 2) {
+          // get first two coords in the arr
+          let coords = transformCoord(locations[0], locations[1]);
+          updateDistance(coords.a, coords.b);
+        } else if (locations.length > 2) {
+          // get the last known coord plus latest coord from location update
+          let coords = transformCoord(locations[locations.length - 2], locations[locations.length - 1]);
+          console.log(`COORDS OUPTUT ${JSON.stringify(coords)}`)
+          updateDistance(coords.a, coords.b);
+          updateElevation(locations[locations.length - 1].altitude!);
+        }
       }, 1000);
+      if (!followUser) {
+        setFollowUser(true)
+      }
     }
 
     return () => {
       clearInterval(interval);
     };
-  }, [recordingState.isRecording, timeData.startTime, timeData.pausedTime]);
+  }, [recordingState.isRecording, timeData.startTime, timeData.pausedTime, locations]);
 
   const startRecording = () => {
     setModalVisible(true);
@@ -117,19 +137,11 @@ export default function Recording() {
       startTime: new Date(0),
       pausedTime: 0,
     }));
-    console.log(`LOC ${locations.length}`);
-
-    // TODO figure out why this is crashing the app
-    // setTimeout(() => {
-    // clearCurrentActivity();
-    // }, 500);
   }
 
   // This triggers the actual recording of the data when the modal form submits
   function closeModal(preActivityData: PreActivity) {
-    console.log(JSON.stringify(preActivityData))
     if (preActivityData.activity && preActivityData.description) {
-      console.log(true)
       setPreActivityForm({
         activityType: preActivityData.activity!,
         description: preActivityData.description!,
@@ -141,7 +153,6 @@ export default function Recording() {
       }));
       handleRecording(RecordingStateEnum.RECORDING);
     }
-    console.log(false)
     // Close it anyway (could be a cancel + undefined passed in as 'close')
     setModalVisible(false);
   }

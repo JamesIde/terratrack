@@ -1,5 +1,5 @@
 import { Dimensions, StyleSheet } from "react-native";
-import React, { useEffect, useMemo, useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import Mapbox, {
   Camera,
   MapView,
@@ -11,10 +11,11 @@ import { CameraRef } from "@rnmapbox/maps/lib/typescript/components/Camera";
 import { mapStore } from "../../../stores/mapStore";
 import { trackingStore } from "../../../stores/trackingStore";
 import { recordingStore } from "../../../stores/recordingStore";
-import { transformCoord } from "../../../utils/transformers/processCoord";
 import { activityStore } from "../../../stores/activityStore";
 import { Position } from "@rnmapbox/maps/lib/typescript/types/Position";
 import * as Turf from "@turf/turf";
+import { LocationObject, Accuracy, getCurrentPositionAsync } from 'expo-location';
+
 import SelectedShapeSource from "./SelectedShapeSource";
 import Recording from "../../buttons/Recording";
 import StatOverlay from "../overlay/statOverlay";
@@ -27,22 +28,17 @@ import CurrentShapeSource from "./CurrentShapeSource";
 Mapbox.setAccessToken(CONFIG.MAP.ACCESS_TOKEN);
 export default function Map() {
   // This allows the camera to move back to user location after selected activity deselection
-  const [userLocation, setUserLocation] = useState<Mapbox.Location | null>(null);
+  const [userLocation, setUserLocation] = useState<LocationObject | null>(null);
   const cameraRef = useRef<CameraRef>(null);
   const mapRef = useRef<MapView>(null);
   const mapStyle = mapStore((state) => state.mapStyle);
+  const [intervalId, setIntervalId] = useState<NodeJS.Timeout | null>(null);
   const [
     recordingState,
-    locations,
     updateLocation,
-    updateDistance,
-    updateElevation,
   ] = recordingStore((state) => [
     state.recordingState,
-    state.locations,
     state.updateLocation,
-    state.updateDistance,
-    state.updateElevation,
   ]);
   const [followUser, setFollowUser] = trackingStore((state) => [
     state.followUser,
@@ -79,10 +75,31 @@ export default function Map() {
     }
   };
 
-  console.log(`value ${followUser}`)
   useEffect(() => {
     zoomToActivity();
-  }, [selectedActivity]);
+
+    if (recordingState.isRecording) {
+      const interval = setInterval(async () => {
+        let location = await getCoords();
+        updateLocation(location.coords);
+      }, 3000);
+      setIntervalId(interval);
+    }
+
+    if (recordingState.isStopped && intervalId) {
+      clearInterval(intervalId);
+    }
+
+    // Cleanup the interval when the component unmounts
+  }, [selectedActivity, recordingState]);
+
+
+  const getCoords = async () => {
+    return await getCurrentPositionAsync({
+      accuracy: Accuracy.BestForNavigation,
+    })
+  };
+
   return (
     <>
       <Mapbox.MapView
@@ -111,33 +128,6 @@ export default function Map() {
           animated={true}
           requestsAlwaysUse={true}
           visible={true}
-          onUpdate={(location) => {
-            setUserLocation(location)
-            if (recordingState.isRecording) {
-              updateLocation(location.coords);
-              if (locations.length === 2) {
-                // get first two coords in the arr
-                let coords = transformCoord(locations[0], locations[1]);
-                updateDistance(coords.a, coords.b);
-              } else if (locations.length > 2) {
-                // get the last known coord plus latest coord from location update
-                let coords = transformCoord(locations[locations.length - 1], {
-                  latitude: location.coords.latitude,
-                  longitude: location.coords.longitude,
-                });
-                updateDistance(coords.a, coords.b);
-              }
-              // Sometimes altitude is not available with bad gps signal
-              if (location.coords.altitude) {
-                updateElevation(location.coords.altitude);
-              }
-
-              if (!followUser) {
-                setFollowUser(true)
-              }
-            }
-          }}
-          minDisplacement={0} // TODO this could be dynamic based on activityType.
         />
         <CurrentShapeSource />
         <SelectedShapeSource />
@@ -171,3 +161,4 @@ export const styles = StyleSheet.create({
     backgroundColor: "#eee",
   },
 });
+

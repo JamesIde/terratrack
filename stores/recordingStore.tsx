@@ -4,8 +4,10 @@ import { Coordinate } from "../@types/coordinates";
 import { haversineDistance } from "../utils/algo/haversineDistance";
 import { HCoord } from "../@types/haversineCoords";
 import { activityTypeEnum } from "../@types/enum/activityTypeEnum";
+import * as Location from 'expo-location';
+
 export const recordingStore = create<{
-  locations: Array<Coordinate>;
+  locations: Array<Location.LocationObjectCoords>;
   elevationArr: Array<number>;
   distance: number;
   currentActivity: string;
@@ -16,7 +18,7 @@ export const recordingStore = create<{
     isStopped: boolean;
   };
   handleRecording: (action: RecordingStateEnum) => void;
-  updateLocation: (location: Coordinate) => void;
+  updateLocation: (location: Location.LocationObjectCoords) => void;
   updateElevation: (elevation: number) => void;
   updateDistance: (coord1: HCoord, coord2: HCoord) => void;
   setShowLine: (show: boolean) => void;
