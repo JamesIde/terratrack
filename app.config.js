@@ -27,7 +27,11 @@ export default {
         },
         android: {
             icon: "./assets/icon.png",
-            package: "com.tudor14abw.terratrack"
+            package: "com.tudor14abw.terratrack",
+            permissions: [
+                "ACCESS_FINE_LOCATION",
+                "ACCESS_COARSE_LOCATION",
+                "ACCESS_BACKGROUND_LOCATION"]
         },
         web: {
             favicon: "./assets/favicon.png"
