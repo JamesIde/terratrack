@@ -6,6 +6,10 @@ import { GridComponent, TooltipComponent } from "echarts/components";
 import { SVGRenderer, SkiaChart } from "@wuba/react-native-echarts";
 import { Activity } from "../../../@types/activity";
 import { ECBasicOption } from "echarts/types/dist/shared";
+import {
+  NativeViewGestureHandler,
+  ScrollView,
+} from "react-native-gesture-handler";
 
 echarts.use([SVGRenderer, LineChart, GridComponent, TooltipComponent]);
 const E_HEIGHT = 400;
@@ -85,9 +89,5 @@ export default function ElevationChart({ activity }: { activity: Activity }) {
     }
     return () => chart?.dispose();
   }, []);
-  return (
-    <>
-      <SkiaChart ref={skiaRef} />
-    </>
-  );
+  return <SkiaChart ref={skiaRef} />;
 }

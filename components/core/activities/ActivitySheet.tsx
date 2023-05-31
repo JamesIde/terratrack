@@ -1,4 +1,4 @@
-import { Text, StyleSheet, View } from "react-native";
+import { Text, StyleSheet, View, ScrollView } from "react-native";
 import BottomSheet, { BottomSheetFlatList } from "@gorhom/bottom-sheet";
 import { useMemo, useCallback, useState, useEffect, useRef } from "react";
 import { Dimensions } from "react-native";
@@ -19,6 +19,9 @@ import { globalColors } from "../../../global/styles/globalColors";
 import { sortStore } from "../../../stores/sortStore";
 import { processActivitySorting } from "../../../utils/transformers/processActivitySorting";
 import DeleteActivityModal from "../../modals/DeleteActivityModal";
+import * as Sentry from "@sentry/react-native";
+import { NativeViewGestureHandler } from "react-native-gesture-handler";
+import ElevationChart from "./ElevationChart";
 export default function ActivitySheet() {
   // Need to read up on useCallback and useMemo too. Been a while and don't fully understand whats happening here.
   const sheetRef = useRef<BottomSheet>(null);
@@ -53,13 +56,12 @@ export default function ActivitySheet() {
     return sort;
   }, [fetchedData, selectedSort]);
 
-  const snapPoints = useMemo(() => ["5%", "50%", "90%"], []);
+  const snapPoints = useMemo(() => ["5%", "40%", "90%"], []);
 
   const handleSheetChanges = useCallback((index: number) => {
     // Closed sheet
     if (index === 0) {
       // Repeats here because the sheet is not updating the state in time
-      setFollowUser(true);
       setSelectedActivity(null);
     }
     fetchData();
@@ -70,6 +72,7 @@ export default function ActivitySheet() {
     // Camera won't follow user, Map.tsx ref sets bounds to the Turf bbox
     setFollowUser(false);
     sheetRef.current?.snapToIndex(1); // 50%
+    Sentry.captureException(new Error("Activity clicked"));
   };
 
   const deselectActivity = () => {
@@ -126,10 +129,14 @@ export default function ActivitySheet() {
             )}
           </>
         ) : (
-          <SelectedActivity
-            activity={selectedActivity}
-            deselectActivity={deselectActivity}
-          />
+          // <NativeViewGestureHandler disallowInterruption={true}>
+          <>
+            <SelectedActivity
+              activity={selectedActivity}
+              deselectActivity={deselectActivity}
+            />
+          </>
+          // </NativeViewGestureHandler>
         )}
       </BottomSheet>
       <DeleteActivityModal

@@ -20,28 +20,27 @@ Sentry.init({
 function App() {
   const [permissionsGranted, setPermissionsGranted] = useState(false);
 
-  const requestLocationsPermissions = async () => {
-    let { status } = await Location.requestForegroundPermissionsAsync();
-    if (status !== "granted") {
-      // TODO show alert
-      console.log("Permission not granted");
-      return;
-    }
-    console.log(`fore granted`);
+  const checkPermissions = async () => {
+    let foreground = await Location.getForegroundPermissionsAsync();
+    console.log(foreground);
 
-    let backPerm = await Location.requestBackgroundPermissionsAsync();
-    if (backPerm.status === "granted") {
-      console.log(`back granted`);
+    if (foreground.granted) {
       setPermissionsGranted(true);
-    } else {
-      // TODO show alert
-      console.log("Permission not granted");
+      return;
+    } else if (!foreground.granted && foreground.canAskAgain) {
+      let { status } = await Location.requestForegroundPermissionsAsync();
+      if (status !== "granted") {
+        // TODO show alert
+        console.log("Permission not granted");
+        return;
+      }
+      setPermissionsGranted(true);
     }
   };
 
   useEffect(() => {
     if (Platform.OS === "android") {
-      requestLocationsPermissions();
+      checkPermissions();
     }
   }, []);
   return (
@@ -65,5 +64,16 @@ function App() {
     </>
   );
 }
+
+/**
+ * 
+    let backPerm = await Location.requestBackgroundPermissionsAsync();
+    if (backPerm.status === "granted") {
+      console.log(`back granted`);
+    } else {
+      // TODO show alert
+      console.log("Permission not granted");
+    }
+ */
 
 export default Sentry.wrap(App);

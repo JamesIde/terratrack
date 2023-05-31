@@ -66,7 +66,7 @@ export default function Map() {
       cameraRef.current?.fitBounds(
         ne,
         sw,
-        [screenHeight * 0.1, 0, screenHeight * 0.6, 0],
+        [screenHeight * 0.1, 0, screenHeight * 0.55, 0],
         100
       );
     } else {
@@ -117,14 +117,14 @@ export default function Map() {
     if (recordingState.isRecording) {
       Location.startLocationUpdatesAsync(TASK_FETCH_LOCATION, {
         accuracy: Location.Accuracy.BestForNavigation,
-        distanceInterval: 2,
+        distanceInterval: 3,
         foregroundService: {
           notificationTitle: "Using your location",
           notificationBody:
-            "To turn off, go back to the app and switch something off.",
+            "Tracking your location to provide the best experience possible.",
         },
         showsBackgroundLocationIndicator: true,
-        timeInterval: 1500,
+        timeInterval: 2500,
       });
     }
 
@@ -161,8 +161,8 @@ export default function Map() {
         <Camera
           followUserLocation={followUser}
           ref={cameraRef}
-          minZoomLevel={11.5}
-          maxZoomLevel={18}
+          // minZoomLevel={11.5}
+          maxZoomLevel={15}
         />
         <UserLocation
           androidRenderMode="normal"
