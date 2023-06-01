@@ -22,18 +22,29 @@ function App() {
 
   const checkPermissions = async () => {
     let foreground = await Location.getForegroundPermissionsAsync();
-    console.log(foreground);
+    let bg = await Location.getBackgroundPermissionsAsync();
+    console.log(`foreground ${foreground.granted}`);
+    console.log(`background ${bg.granted}`);
 
-    if (foreground.granted) {
+    if (foreground.granted && bg.granted) {
       setPermissionsGranted(true);
       return;
     } else if (!foreground.granted && foreground.canAskAgain) {
-      let { status } = await Location.requestForegroundPermissionsAsync();
-      if (status !== "granted") {
-        // TODO show alert
-        console.log("Permission not granted");
-        return;
-      }
+      await Location.requestForegroundPermissionsAsync().then(async (fg) => {
+        if (fg.granted) {
+          await Location.requestBackgroundPermissionsAsync().then((bg) => {
+            if (bg.granted) {
+              setPermissionsGranted(true);
+            } else {
+              // TODO show alert
+              console.log("bg not granted");
+            }
+          });
+        } else {
+          // TODO show alert
+          console.log("fg not granted");
+        }
+      });
       setPermissionsGranted(true);
     }
   };

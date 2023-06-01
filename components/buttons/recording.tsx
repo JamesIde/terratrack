@@ -12,7 +12,7 @@ import { transformCoord } from "../../utils/transformers/processCoord";
 import { trackingStore } from "../../stores/trackingStore";
 import BeforeYouStardActivityModal from "../modals/BeforeYouStartModal";
 import uuid from "react-native-uuid";
-import StatOverlay from "../core/overlay/StatOverlay";
+import StatOverlay from "../core/overlay/statOverlay";
 // TODO the elapsed time is still broken
 // This component is probably doing too much. Its probably the worst code I've ever written.
 export default function Recording() {

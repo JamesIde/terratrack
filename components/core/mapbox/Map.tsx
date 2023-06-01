@@ -117,14 +117,15 @@ export default function Map() {
     if (recordingState.isRecording) {
       Location.startLocationUpdatesAsync(TASK_FETCH_LOCATION, {
         accuracy: Location.Accuracy.BestForNavigation,
-        distanceInterval: 3,
+        distanceInterval: 2,
         foregroundService: {
           notificationTitle: "Using your location",
           notificationBody:
             "Tracking your location to provide the best experience possible.",
+          notificationColor: "#ff0000",
         },
         showsBackgroundLocationIndicator: true,
-        timeInterval: 2500,
+        timeInterval: 2000,
       });
     }
 
