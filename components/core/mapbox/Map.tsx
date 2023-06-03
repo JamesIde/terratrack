@@ -24,6 +24,7 @@ import MapStyleButton from "../../buttons/MapStyle";
 import CurrentShapeSource from "./CurrentShapeSource";
 import { ExpoLocation } from "../../../@types/expoLocation";
 import { transformCoord } from "../../../utils/transformers/processCoord";
+import { printCurrentTime } from "../../../utils/printTime";
 /**
  * The coordinates for point annotation follow [longitude, latitude]. Longitude is the bigger number (138), latitude is the smaller number (-35).
  */
@@ -91,8 +92,8 @@ export default function Map() {
 
     if (recordingState.isRecording) {
       let location = data as ExpoLocation;
+      // location.locations.forEach((location) => {
       updateLocation(location.locations[0].coords);
-      console.log(`loca updateatata ${location.locations[0].coords.latitude}`);
       if (locations.length === 2) {
         // get first two coords in the arr
         let coords = transformCoord(locations[0], locations[1]);
@@ -103,21 +104,29 @@ export default function Map() {
           locations[locations.length - 2],
           locations[locations.length - 1]
         );
-        console.log(`COORDS OUPTUT ${JSON.stringify(coords)}`);
         updateDistance(coords.a, coords.b);
         updateElevation(locations[locations.length - 1].altitude!);
       }
+      // });
     } else {
       console.log(`not recording, but we got a new update`);
     }
+    let loc = data as ExpoLocation;
+    console.log(
+      printCurrentTime() +
+        " " +
+        loc.locations.length +
+        " " +
+        JSON.stringify(loc)
+    );
   });
 
   useEffect(() => {
     zoomToActivity();
     if (recordingState.isRecording) {
       Location.startLocationUpdatesAsync(TASK_FETCH_LOCATION, {
-        accuracy: Location.Accuracy.BestForNavigation,
-        distanceInterval: 2,
+        accuracy: Location.Accuracy.Balanced,
+        distanceInterval: 0,
         foregroundService: {
           notificationTitle: "Using your location",
           notificationBody:
@@ -125,7 +134,7 @@ export default function Map() {
           notificationColor: "#ff0000",
         },
         showsBackgroundLocationIndicator: true,
-        timeInterval: 2000,
+        timeInterval: 1000,
       });
     }
 
