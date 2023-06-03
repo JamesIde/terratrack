@@ -20,18 +20,26 @@ import { sortStore } from "../../../stores/sortStore";
 import { processActivitySorting } from "../../../utils/transformers/processActivitySorting";
 import DeleteActivityModal from "../../modals/DeleteActivityModal";
 import * as Sentry from "@sentry/react-native";
-import { NativeViewGestureHandler } from "react-native-gesture-handler";
-import ElevationChart from "./ElevationChart";
+import ElevationChartModal from "../../modals/ElevationChartModal";
 export default function ActivitySheet() {
   // Need to read up on useCallback and useMemo too. Been a while and don't fully understand whats happening here.
   const sheetRef = useRef<BottomSheet>(null);
   const [deleteModalVisible, setDeleteModalVisible] = useState(false);
+  const [chartModalVisible, setChartModalVisible] = useState(false);
   const [deleteActivityKey, setDeleteActivityKey] = useState("");
   const [fetchedData, setFetchedData] = useState<Activity[]>([]);
   const selectedSort = sortStore((state) => state.selectedSort);
-  const [selectedActivity, setSelectedActivity] = activityStore((state) => [
+
+  const [
+    selectedActivity,
+    chartData,
+    setSelectedActivity,
+    setElevationMetadata,
+  ] = activityStore((state) => [
     state.selectedActivity,
+    state.chartData,
     state.setSelectedActivity,
+    state.setChartData,
   ]);
   const setFollowUser = trackingStore((state) => state.setFollowUser);
   const fetchData = useCallback(async () => {
@@ -48,8 +56,9 @@ export default function ActivitySheet() {
   }, []);
 
   useEffect(() => {
+    handleElevationChart();
     fetchData();
-  }, []);
+  }, [chartData]);
 
   const data = useMemo(() => {
     let sort = processActivitySorting(fetchedData, selectedSort).reverse();
@@ -85,6 +94,21 @@ export default function ActivitySheet() {
   const removeActivity = async (id: string) => {
     setDeleteModalVisible(true);
     setDeleteActivityKey(id);
+  };
+
+  const handleElevationChart = () => {
+    if (chartData) {
+      setChartModalVisible(true);
+      sheetRef.current?.close();
+    } else {
+      if (selectedActivity) {
+        sheetRef.current?.snapToIndex(1);
+      }
+    }
+
+    // If modal is closed, set chart to false.
+    // Set selectedActivity to that in state
+    // open sheetRef.snapIndex 1
   };
 
   return (
@@ -129,14 +153,12 @@ export default function ActivitySheet() {
             )}
           </>
         ) : (
-          // <NativeViewGestureHandler disallowInterruption={true}>
           <>
             <SelectedActivity
               activity={selectedActivity}
               deselectActivity={deselectActivity}
             />
           </>
-          // </NativeViewGestureHandler>
         )}
       </BottomSheet>
       <DeleteActivityModal
@@ -146,6 +168,17 @@ export default function ActivitySheet() {
             await deleteActivity(deleteActivityKey).then(() => fetchData());
           }
           setDeleteModalVisible(false);
+        }}
+      />
+      <ElevationChartModal
+        chartData={chartData}
+        modalVisible={chartModalVisible}
+        closeModal={(shouldClose) => {
+          if (shouldClose) {
+            setElevationMetadata(null);
+            setChartModalVisible(false);
+            sheetRef.current?.snapToIndex(1);
+          }
         }}
       />
     </>

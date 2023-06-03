@@ -50,7 +50,6 @@ export default function SelectedActivity({
         </View>
       </View>
       <ActivityMetadata activity={activity!} />
-      {/* <ElevationChart activity={activity!} /> */}
     </>
   );
 }

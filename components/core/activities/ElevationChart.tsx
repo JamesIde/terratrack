@@ -12,29 +12,35 @@ import {
 } from "react-native-gesture-handler";
 
 echarts.use([SVGRenderer, LineChart, GridComponent, TooltipComponent]);
-const E_HEIGHT = 400;
+const E_HEIGHT = 300;
 const E_WIDTH = Dimensions.get("window").width;
 export default function ElevationChart({ activity }: { activity: Activity }) {
   const chartData = activity.elevation.elevationPoints.map(
     (elevation, index) => ({
       value: [
-        activity.distance * (index / activity.elevation.elevationPoints.length),
-        elevation,
+        (
+          activity.distance *
+          (index / activity.elevation.elevationPoints.length)
+        ).toFixed(0),
+        elevation.toFixed(0),
       ],
       coord: activity.coordinates ? activity.coordinates[index] : null,
     })
   );
-
   const skiaRef = useRef<any>(null);
   useEffect(() => {
     const option: ECBasicOption = {
       grid: {
         right: "5%",
+        left: "12%",
+        top: "10%",
+        bottom: "30%",
       },
       tooltip: {
         trigger: "axis",
-        axisPointer: {
-          type: "cross",
+        formatter(params: any) {
+          console.log(Math.random() + ` ${params[0].data.coord}`);
+          return `Elevation: ${params[0].data.value[1]} meters\nDistance: ${params[0].axisValue} meters`;
         },
       },
       xAxis: {
@@ -59,6 +65,8 @@ export default function ElevationChart({ activity }: { activity: Activity }) {
           data: chartData,
           type: "line",
           smooth: true,
+          symbol: "none",
+          symbolSize: 0,
           color: "rgba(255, 0, 0, 0.9)",
           itemStyle: {
             color: "rgb(255, 70, 131)",

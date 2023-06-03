@@ -75,16 +75,4 @@ function App() {
     </>
   );
 }
-
-/**
- * 
-    let backPerm = await Location.requestBackgroundPermissionsAsync();
-    if (backPerm.status === "granted") {
-      console.log(`back granted`);
-    } else {
-      // TODO show alert
-      console.log("Permission not granted");
-    }
- */
-
 export default Sentry.wrap(App);

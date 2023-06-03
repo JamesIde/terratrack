@@ -66,7 +66,7 @@ export default function Map() {
       cameraRef.current?.fitBounds(
         ne,
         sw,
-        [screenHeight * 0.1, 0, screenHeight * 0.55, 0],
+        [screenHeight * 0.1, 0, screenHeight * 0.45, 0],
         100
       );
     } else {

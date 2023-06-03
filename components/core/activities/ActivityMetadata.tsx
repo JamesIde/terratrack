@@ -1,11 +1,14 @@
-import { View, Text, StyleSheet } from "react-native";
+import { View, Text, StyleSheet, Pressable } from "react-native";
 import { globalColors } from "../../../global/styles/globalColors";
 import { Activity } from "../../../@types/activity";
 import { processDistance } from "../../../utils/transformers/processDistance";
 import { formatElevation } from "../../../utils/transformers/processElevation";
 import { formatShortFormTime } from "../../../utils/transformers/processTime";
+import { Entypo } from "@expo/vector-icons";
+import { activityStore } from "../../../stores/activityStore";
+
 export default function ActivityMetadata({ activity }: { activity: Activity }) {
-  // This could easily be dynamic. Why not try it?
+  const setChartData = activityStore((state) => state.setChartData);
   return (
     <View style={styles.container}>
       <View style={styles.gridItem}>
@@ -23,12 +26,20 @@ export default function ActivityMetadata({ activity }: { activity: Activity }) {
           {formatShortFormTime(activity.duration)}
         </Text>
       </View>
-      <View style={styles.gridItem}>
-        <Text style={styles.label}>ELEVATION</Text>
-        <Text style={styles.text}>
-          {formatElevation(activity.elevation.elevationGain)}
-        </Text>
-      </View>
+      <Pressable
+        style={styles.gridItem}
+        android_ripple={{
+          color: "rgba(0, 0, 0, .1)",
+        }}
+        onPress={() => setChartData(activity)}
+      >
+        <View>
+          <Text style={styles.label}>ELEVATION *</Text>
+          <Text style={styles.text}>
+            {formatElevation(activity.elevation.elevationGain)}
+          </Text>
+        </View>
+      </Pressable>
     </View>
   );
 }
@@ -59,5 +70,8 @@ const styles = StyleSheet.create({
   },
   text: {
     fontSize: 16,
+  },
+  gridItemPressed: {
+    opacity: 0.5,
   },
 });
