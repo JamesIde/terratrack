@@ -21,31 +21,23 @@ function App() {
   const [permissionsGranted, setPermissionsGranted] = useState(false);
 
   const checkPermissions = async () => {
+    // TODO tidy this up
     let foreground = await Location.getForegroundPermissionsAsync();
     let bg = await Location.getBackgroundPermissionsAsync();
-    console.log(`foreground ${foreground.granted}`);
-    console.log(`background ${bg.granted}`);
-
+    console.log(`foreground ${JSON.stringify(foreground)}`);
+    console.log(`background ${JSON.stringify(bg)}`);
+    console.log(`step 1`);
     if (foreground.granted && bg.granted) {
+      console.log(`step 2`);
       setPermissionsGranted(true);
       return;
     } else if (!foreground.granted && foreground.canAskAgain) {
-      await Location.requestForegroundPermissionsAsync().then(async (fg) => {
-        if (fg.granted) {
-          await Location.requestBackgroundPermissionsAsync().then((bg) => {
-            if (bg.granted) {
-              setPermissionsGranted(true);
-            } else {
-              // TODO show alert
-              console.log("bg not granted");
-            }
-          });
-        } else {
-          // TODO show alert
-          console.log("fg not granted");
-        }
-      });
-      setPermissionsGranted(true);
+      console.log(`step 3`);
+      let fg = await Location.requestForegroundPermissionsAsync();
+    }
+    if (!bg.granted && bg.canAskAgain) {
+      console.log(`step 4`);
+      let bg = await Location.requestBackgroundPermissionsAsync();
     }
   };
 
@@ -53,7 +45,7 @@ function App() {
     if (Platform.OS === "android") {
       checkPermissions();
     }
-  }, []);
+  }, [permissionsGranted]);
   return (
     <>
       {permissionsGranted ? (

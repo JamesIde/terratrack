@@ -81,7 +81,6 @@ export default function ActivitySheet() {
     // Camera won't follow user, Map.tsx ref sets bounds to the Turf bbox
     setFollowUser(false);
     sheetRef.current?.snapToIndex(1); // 50%
-    Sentry.captureException(new Error("Activity clicked"));
   };
 
   const deselectActivity = () => {

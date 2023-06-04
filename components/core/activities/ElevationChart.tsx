@@ -39,8 +39,16 @@ export default function ElevationChart({ activity }: { activity: Activity }) {
       tooltip: {
         trigger: "axis",
         formatter(params: any) {
-          console.log(Math.random() + ` ${params[0].data.coord}`);
-          return `Elevation: ${params[0].data.value[1]} meters\nDistance: ${params[0].axisValue} meters`;
+          function formatLabel() {
+            let label = "Distance: ";
+            if (params[0].axisValue < 1000) {
+              label += `${params[0].axisValue} meters`;
+            } else {
+              label += `${(params[0].axisValue / 1000).toFixed(1)} kilometers`;
+            }
+            return `Elevation: ${params[0].data.value[1]} meters\n` + label;
+          }
+          return formatLabel();
         },
       },
       xAxis: {
