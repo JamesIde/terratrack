@@ -1,7 +1,6 @@
 import { View, Text, Pressable, StyleSheet } from "react-native";
 import { Activity } from "../../../@types/activity";
-import { Ionicons } from "@expo/vector-icons";
-import { Entypo } from "@expo/vector-icons";
+import { Button } from "react-native-paper";
 import { globalColors } from "../../../global/styles/globalColors";
 import ActivityMetadata from "./ActivityMetadata";
 import ElevationChart from "./ElevationChart";
@@ -14,26 +13,26 @@ export default function SelectedActivity({
   activity: Activity | null;
   deselectActivity: () => void;
 }) {
+  // onPress={deselectActivity}
   return (
     <>
       <View style={{ justifyContent: "space-between", flexDirection: "row" }}>
-        <TouchableWithoutFeedback
+        <Button
+          mode="text"
           onPress={deselectActivity}
-          style={{ marginLeft: 10 }}
+          icon="arrow-left"
+          textColor={globalColors.primaryGreen}
         >
-          <Ionicons
-            name="md-chevron-back"
-            size={24}
-            color={globalColors.primaryGreen}
-          />
-        </TouchableWithoutFeedback>
-        <TouchableWithoutFeedback
-          style={{
-            marginRight: 16,
-          }}
+          Back
+        </Button>
+        <Button
+          mode="text"
+          onPress={() => console.log(`here`)}
+          icon="upload"
+          textColor={globalColors.primaryGreen}
         >
-          <Entypo name="upload" size={24} color={globalColors.primaryGreen} />
-        </TouchableWithoutFeedback>
+          Upload
+        </Button>
       </View>
       <View style={styles.container}>
         <View style={styles.centerContainer}>
