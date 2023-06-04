@@ -21,6 +21,7 @@ import { processActivitySorting } from "../../../utils/transformers/processActiv
 import DeleteActivityModal from "../../modals/DeleteActivityModal";
 import * as Sentry from "@sentry/react-native";
 import ElevationChartModal from "../../modals/ElevationChartModal";
+import { searchStore } from "../../../stores/searchStore";
 export default function ActivitySheet() {
   // Need to read up on useCallback and useMemo too. Been a while and don't fully understand whats happening here.
   const sheetRef = useRef<BottomSheet>(null);
@@ -42,6 +43,10 @@ export default function ActivitySheet() {
     state.setChartData,
   ]);
   const setFollowUser = trackingStore((state) => state.setFollowUser);
+  const [search, setSearch] = searchStore((state) => [
+    state.search,
+    state.setSearch,
+  ]);
   const fetchData = useCallback(async () => {
     try {
       const activities = await getActivities();
@@ -59,11 +64,14 @@ export default function ActivitySheet() {
     handleElevationChart();
     fetchData();
   }, [chartData]);
-
   const data = useMemo(() => {
-    let sort = processActivitySorting(fetchedData, selectedSort).reverse();
+    let sort = processActivitySorting(
+      fetchedData,
+      selectedSort,
+      search
+    ).reverse();
     return sort;
-  }, [fetchedData, selectedSort]);
+  }, [fetchedData, selectedSort, search]);
 
   const snapPoints = useMemo(() => ["5%", "40%", "90%"], []);
 
@@ -87,6 +95,7 @@ export default function ActivitySheet() {
     setSelectedActivity(null);
     // Returns camera view to user location
     setFollowUser(true);
+    setSearch("");
     sheetRef.current?.snapToIndex(2); // 80%
   };
 

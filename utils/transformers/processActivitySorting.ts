@@ -1,6 +1,17 @@
 import { Activity } from "../../@types/activity";
 
-export function processActivitySorting(data: Activity[], sort: string) {
+export function processActivitySorting(
+  data: Activity[],
+  sort: string,
+  search: string
+) {
+  // We could make this a lot more sophisticated, but for now, this will do.
+  if (search && search.length > 0) {
+    return data.filter((activity) => {
+      return activity.description.toLowerCase().includes(search.toLowerCase());
+    });
+  }
+
   if (sort === "date") {
     return data.sort(
       (a, b) =>
