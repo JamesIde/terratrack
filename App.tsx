@@ -9,14 +9,16 @@ import * as Sentry from "@sentry/react-native";
 import Account from "./screens/Account";
 import Home from "./screens/Home";
 import { globalColors } from "./global/styles/globalColors";
+import { ClerkProvider } from "@clerk/clerk-expo";
 Sentry.init({
   dsn: CONFIG.SENTRY.DSN,
 });
 function App() {
   const Drawer = createDrawerNavigator();
+  const CLERK_PUBLISHABLE_KEY = CONFIG.CLERK.PUBLISHABLE_KEY;
 
   return (
-    <>
+    <ClerkProvider publishableKey={CLERK_PUBLISHABLE_KEY}>
       <PaperProvider>
         {/* <SafeAreaView style={{ height: "100%" }}> */}
         <StatusBar style="auto" />
@@ -35,7 +37,7 @@ function App() {
         </NavigationContainer>
         {/* </SafeAreaView> */}
       </PaperProvider>
-    </>
+    </ClerkProvider>
   );
 }
 export default Sentry.wrap(App);

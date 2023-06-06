@@ -22,4 +22,9 @@ export const CONFIG = {
   SENTRY: {
     DSN: Constants.expoConfig?.extra?.SENTRY_DSN,
   },
+  CLERK: {
+    // This can be public... Its not secret
+    PUBLISHABLE_KEY:
+      "pk_test_dG9nZXRoZXItZGFzc2llLTcxLmNsZXJrLmFjY291bnRzLmRldiQ",
+  },
 };
