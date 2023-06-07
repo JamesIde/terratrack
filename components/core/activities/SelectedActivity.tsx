@@ -13,7 +13,6 @@ export default function SelectedActivity({
   activity: Activity | null;
   deselectActivity: () => void;
 }) {
-  // onPress={deselectActivity}
   return (
     <>
       <View style={{ justifyContent: "space-between", flexDirection: "row" }}>
