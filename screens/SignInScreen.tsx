@@ -2,14 +2,24 @@ import { useSignIn } from "@clerk/clerk-expo";
 import { Controller, useForm } from "react-hook-form";
 import { View, Text, StyleSheet } from "react-native";
 import { Button, TextInput } from "react-native-paper";
-import { globalStyles } from "../../../global/styles/globalStyles";
-import ValidationError from "../common/ValidationError";
-import { useState } from "react";
-import { UserData } from "../../../@types/signup";
-import { getException } from "../../../services/exception.service";
-import { useNavigation } from "@react-navigation/native";
-export default function SignIn({ togglePage }: { togglePage: () => void }) {
-  const navigation = useNavigation();
+import { globalStyles } from "../global/styles/globalStyles";
+import { useEffect, useState } from "react";
+import { UserData } from "../@types/signup";
+import { getException } from "../services/exception.service";
+import { NativeStackNavigationProp } from "@react-navigation/native-stack";
+import { RootStackParamList } from "../@types/navigation";
+import ValidationError from "../components/core/common/ValidationError";
+// { togglePage }: { togglePage: () => void }
+export default function SignInScreen({
+  navigation,
+}: {
+  navigation: NativeStackNavigationProp<RootStackParamList>;
+}) {
+  useEffect(() => {
+    navigation.setOptions({
+      headerTitle: "Sign In",
+    });
+  }, []);
   const [flatTextSecureEntry, setFlatTextSecureEntry] = useState(true);
   const [signInLoading, setSignInLoading] = useState(false);
   const { signIn, setActive, isLoaded } = useSignIn();
@@ -56,7 +66,7 @@ export default function SignIn({ togglePage }: { togglePage: () => void }) {
       >
         <Text>New to Terratrack? </Text>
         <Text
-          onPress={togglePage}
+          onPress={() => navigation.navigate("SignUp")}
           style={{
             color: "#0000FF",
             fontWeight: "bold",

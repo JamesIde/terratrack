@@ -1,11 +1,12 @@
 import { createDrawerNavigator } from "@react-navigation/drawer";
-import Home from "../screens/Home";
-import Account from "../screens/Account";
 import { globalColors } from "../global/styles/globalColors";
-import { Ionicons } from "@expo/vector-icons";
-import { Image, StyleSheet, View, Pressable } from "react-native";
+import { Image, StyleSheet, Pressable } from "react-native";
 import { useUser } from "@clerk/clerk-expo";
 import { useNavigation } from "@react-navigation/native";
+import SignInScreen from "../screens/SignInScreen";
+import SignUpScreen from "../screens/SignUpScreen";
+import AccountScreen from "../screens/AccountScreen";
+import HomeScreen from "../screens/HomeScreen";
 const Drawer = createDrawerNavigator();
 
 export default function DrawerNavigator() {
@@ -31,8 +32,22 @@ export default function DrawerNavigator() {
           )),
       }}
     >
-      <Drawer.Screen name="Terratrack" component={Home} />
-      <Drawer.Screen name="Account" component={Account} />
+      <Drawer.Screen name="Terratrack" component={HomeScreen} />
+      <Drawer.Screen name="Account" component={AccountScreen} />
+      <Drawer.Screen
+        name="SignIn"
+        component={SignInScreen}
+        options={{
+          drawerItemStyle: { height: 0 },
+        }}
+      />
+      <Drawer.Screen
+        name="SignUp"
+        component={SignUpScreen}
+        options={{
+          drawerItemStyle: { height: 0 },
+        }}
+      />
     </Drawer.Navigator>
   );
 }

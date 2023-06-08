@@ -1,16 +1,26 @@
 import { StyleSheet, Text, View } from "react-native";
 import { Button, TextInput } from "react-native-paper";
 import { useSignUp, useUser } from "@clerk/clerk-expo";
-import { useState } from "react";
-import { globalStyles } from "../../../global/styles/globalStyles";
+import { useEffect, useState } from "react";
 import { useForm, Controller } from "react-hook-form";
-import ValidationError from "../common/ValidationError";
-import { UserData } from "../../../@types/signup";
-import { getException } from "../../../services/exception.service";
-import { useNavigation } from "@react-navigation/native";
-import { ShowAlert } from "../../../utils/alert/alert";
-export default function SignUp({ togglePage }: { togglePage: () => void }) {
-  const navigation = useNavigation();
+import ValidationError from "../components/core/common/ValidationError";
+import { getException } from "../services/exception.service";
+import { UserData } from "../@types/signup";
+import { globalStyles } from "../global/styles/globalStyles";
+import { ShowAlert } from "../utils/alert/alert";
+import { NativeStackNavigationProp } from "@react-navigation/native-stack";
+import { RootStackParamList } from "../@types/navigation";
+export default function SignUpScreen({
+  navigation,
+}: {
+  navigation: NativeStackNavigationProp<RootStackParamList>;
+}) {
+  useEffect(() => {
+    navigation.setOptions({
+      headerTitle: "Sign Up",
+    });
+  }, []);
+
   const { user, isSignedIn } = useUser();
   const [flatTextSecureEntry, setFlatTextSecureEntry] = useState(true);
   const { isLoaded, signUp, setActive } = useSignUp();
@@ -74,7 +84,7 @@ export default function SignUp({ togglePage }: { togglePage: () => void }) {
         .then(async (res) => {
           console.log(res);
           await setActive({ session: res.createdSessionId }).then(() => {
-            navigation.navigate("Terratrack" as never);
+            navigation.navigate("Terratrack");
             setPendingVerification(false);
             reset();
           });
@@ -99,7 +109,7 @@ export default function SignUp({ togglePage }: { togglePage: () => void }) {
             >
               <Text>Joined us before? </Text>
               <Text
-                onPress={togglePage}
+                onPress={() => navigation.navigate("SignIn")}
                 style={{
                   color: "#0000FF",
                   fontWeight: "bold",

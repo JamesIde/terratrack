@@ -6,7 +6,7 @@ import ActivitySheet from "../components/core/activities/ActivitySheet";
 import { globalStyles } from "../global/styles/globalStyles";
 import Map from "../components/core/mapbox/Map";
 
-export default function Home() {
+export default function HomeScreen() {
   const [permissionsGranted, setPermissionsGranted] = useState(false);
   const checkPermissions = async () => {
     // TODO tidy this up
