@@ -90,6 +90,7 @@ export default function SignInScreen({
                 onChangeText={onChange}
                 value={value}
                 placeholder="Email"
+                keyboardType="email-address"
               />
               {errors.emailAddress?.type === "required" && (
                 <ValidationError text="An email is required" color="red" />

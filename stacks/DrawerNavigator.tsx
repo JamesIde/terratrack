@@ -1,8 +1,10 @@
 import { createDrawerNavigator } from "@react-navigation/drawer";
 import { globalColors } from "../global/styles/globalColors";
-import { Image, StyleSheet, Pressable } from "react-native";
+import { Image, StyleSheet, Pressable, Text } from "react-native";
 import { useUser } from "@clerk/clerk-expo";
 import { useNavigation } from "@react-navigation/native";
+import * as NetInfo from "@react-native-community/netinfo";
+import { Ionicons } from "@expo/vector-icons";
 import SignInScreen from "../screens/SignInScreen";
 import SignUpScreen from "../screens/SignUpScreen";
 import AccountScreen from "../screens/AccountScreen";
@@ -13,6 +15,8 @@ export default function DrawerNavigator() {
   const navigation = useNavigation();
   const { isLoaded, isSignedIn, user } = useUser();
   console.log(user?.imageUrl);
+  let { isConnected } = NetInfo.useNetInfo();
+
   return (
     <Drawer.Navigator
       initialRouteName="Terratrack"
@@ -20,8 +24,8 @@ export default function DrawerNavigator() {
         headerStyle: {
           backgroundColor: globalColors.primaryLightBlue,
         },
-        headerRight: ({ tintColor }) =>
-          ({ isSignedIn } && (
+        headerRight: () =>
+          isSignedIn ? (
             <Pressable
               onPress={() => {
                 navigation.navigate("Account" as never);
@@ -29,7 +33,27 @@ export default function DrawerNavigator() {
             >
               <Image style={styles.tinyLogo} source={{ uri: user?.imageUrl }} />
             </Pressable>
-          )),
+          ) : isConnected ? (
+            <Pressable
+              onPress={() => {
+                navigation.navigate("Account" as never);
+              }}
+              style={({ pressed }) => ({
+                opacity: pressed ? 0.5 : 1,
+              })}
+            >
+              <Ionicons
+                name="person-circle-outline"
+                size={40}
+                style={{ marginRight: 10 }}
+              />
+            </Pressable>
+          ) : (
+            <Image
+              style={styles.tinyLogo}
+              source={require("../assets/icon.png")}
+            />
+          ),
       }}
     >
       <Drawer.Screen name="Terratrack" component={HomeScreen} />
@@ -54,8 +78,8 @@ export default function DrawerNavigator() {
 
 const styles = StyleSheet.create({
   tinyLogo: {
-    width: 45,
-    height: 45,
+    width: 40,
+    height: 40,
     marginRight: 15,
     borderRadius: 50,
   },

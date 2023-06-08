@@ -1,15 +1,16 @@
 import { useSignUp, useUser } from "@clerk/clerk-expo";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack/lib/typescript/src/types";
 import { RootStackParamList } from "../@types/navigation";
-import { useState, useEffect, useLayoutEffect } from "react";
+import { useLayoutEffect } from "react";
 import Profile from "../components/core/user/Profile";
+import { View, Text } from "react-native";
 
 export default function AccountScreen({
   navigation,
 }: {
   navigation: NativeStackNavigationProp<RootStackParamList>;
 }) {
-  const { isLoaded, isSignedIn, user } = useUser();
+  const { isSignedIn } = useUser();
 
   useLayoutEffect(() => {
     const unsubscribe = navigation.addListener("focus", async () => {
@@ -19,7 +20,15 @@ export default function AccountScreen({
     });
 
     return unsubscribe;
-  }, []);
+  }, [isSignedIn]);
 
-  return <>{isLoaded ?? <Profile />}</>;
+  return (
+    <>
+      {isSignedIn && (
+        <View>
+          <Profile navigation={navigation} />
+        </View>
+      )}
+    </>
+  );
 }

@@ -21,3 +21,16 @@ export function processShortDate(date: string) {
   });
   return `${formattedDate} - ${formattedTime}`;
 }
+
+/**
+ * A function that converts the date string from YYYY-MM-DD to DD Month YYYY
+ * @param date
+ * @returns formatted date string as DD Month YYYY
+ */
+export function processLongDate(date: Date) {
+  return date.toLocaleString("en-AU", {
+    month: "long",
+    day: "numeric",
+    year: "numeric",
+  });
+}

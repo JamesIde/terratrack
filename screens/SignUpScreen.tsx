@@ -176,6 +176,7 @@ export default function SignUpScreen({
                       value={value}
                       placeholderTextColor="#000"
                       placeholder="Email"
+                      keyboardType="email-address"
                     />
                     {errors.emailAddress?.type === "required" && (
                       <ValidationError

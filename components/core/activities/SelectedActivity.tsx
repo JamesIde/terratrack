@@ -5,6 +5,7 @@ import { globalColors } from "../../../global/styles/globalColors";
 import ActivityMetadata from "./ActivityMetadata";
 import ElevationChart from "./ElevationChart";
 import { TouchableWithoutFeedback } from "react-native-gesture-handler";
+import { useUser } from "@clerk/clerk-expo";
 
 export default function SelectedActivity({
   activity,
@@ -13,6 +14,7 @@ export default function SelectedActivity({
   activity: Activity | null;
   deselectActivity: () => void;
 }) {
+  const { isSignedIn } = useUser();
   return (
     <>
       <View style={{ justifyContent: "space-between", flexDirection: "row" }}>
@@ -24,14 +26,16 @@ export default function SelectedActivity({
         >
           Back
         </Button>
-        <Button
-          mode="text"
-          onPress={() => console.log(`here`)}
-          icon="upload"
-          textColor={globalColors.primaryGreen}
-        >
-          Upload
-        </Button>
+        {isSignedIn && (
+          <Button
+            mode="text"
+            onPress={() => console.log(`here`)}
+            icon="upload"
+            textColor={globalColors.primaryGreen}
+          >
+            Upload
+          </Button>
+        )}
       </View>
       <View style={styles.container}>
         <View style={styles.centerContainer}>
