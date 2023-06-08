@@ -25,6 +25,7 @@ import CurrentShapeSource from "./CurrentShapeSource";
 import { ExpoLocation } from "../../../@types/expoLocation";
 import { transformCoord } from "../../../utils/transformers/processCoord";
 import { printCurrentTime } from "../../../utils/printTime";
+import SelectedElevationMarker from "./SelectedElevationMarker";
 /**
  * The coordinates for point annotation follow [longitude, latitude]. Longitude is the bigger number (138), latitude is the smaller number (-35).
  */
@@ -184,6 +185,7 @@ export default function Map() {
         />
         <CurrentShapeSource />
         <SelectedShapeSource />
+        <SelectedElevationMarker />
       </Mapbox.MapView>
       <>
         {!selectedActivity && (

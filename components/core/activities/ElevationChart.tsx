@@ -6,15 +6,13 @@ import { GridComponent, TooltipComponent } from "echarts/components";
 import { SVGRenderer, SkiaChart } from "@wuba/react-native-echarts";
 import { Activity } from "../../../@types/activity";
 import { ECBasicOption } from "echarts/types/dist/shared";
-import {
-  NativeViewGestureHandler,
-  ScrollView,
-} from "react-native-gesture-handler";
+import { markerStore } from "../../../stores/markerStore";
 
 echarts.use([SVGRenderer, LineChart, GridComponent, TooltipComponent]);
 const E_HEIGHT = 300;
 const E_WIDTH = Dimensions.get("window").width;
 export default function ElevationChart({ activity }: { activity: Activity }) {
+  const setMarker = markerStore((state) => state.setMarker);
   const chartData = activity.elevation.elevationPoints.map(
     (elevation, index) => ({
       value: [
@@ -39,6 +37,7 @@ export default function ElevationChart({ activity }: { activity: Activity }) {
       tooltip: {
         trigger: "axis",
         formatter(params: any) {
+          setMarker(params[0].data.coord);
           function formatLabel() {
             let label = "Distance: ";
             if (params[0].axisValue < 1000) {
@@ -102,6 +101,9 @@ export default function ElevationChart({ activity }: { activity: Activity }) {
         height: E_HEIGHT,
       });
       chart.setOption(option);
+      chart.getZr().on("dragend", function (event) {
+        setMarker(null);
+      });
     }
     return () => chart?.dispose();
   }, []);
