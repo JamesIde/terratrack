@@ -1,11 +1,5 @@
 
 import "dotenv/config"
-
-const ACCESS_TOKEN = process.env.MAPBOX_ACCESS_TOKEN
-const MAPBOX_DOWNLOAD_TOKEN = process.env.MAPBOX_DOWNLOAD_TOKEN
-const TOPOGRAPHIC_URL = process.env.TOPOGRAPHIC_URL
-const SATELLITE_URL = process.env.SATELLITE_URL
-const SENTRY_DSN = process.env.SENTRY_DSN
 export default {
     expo: {
         name: "terratrack",
@@ -41,7 +35,7 @@ export default {
                 "@rnmapbox/maps",
                 {
                     RNMapboxMapsImpl: "mapbox",
-                    RNMapboxMapsDownloadToken: MAPBOX_DOWNLOAD_TOKEN
+                    RNMapboxMapsDownloadToken: process.env.MAPBOX_DOWNLOAD_TOKEN
                 }
             ]
         ],
@@ -49,11 +43,14 @@ export default {
             eas: {
                 projectId: "611c0648-6e8d-421d-aa28-a2dfb0f5a1d8"
             },
-            MAPBOX_ACCESS_TOKEN: ACCESS_TOKEN,
-            MAPBOX_DOWNLOAD_TOKEN: MAPBOX_DOWNLOAD_TOKEN,
-            TOPOGRAPHIC_URL: TOPOGRAPHIC_URL,
-            SATELLITE_URL: SATELLITE_URL,
-            SENTRY_DSN: SENTRY_DSN
+            MAPBOX_ACCESS_TOKEN: process.env.MAPBOX_ACCESS_TOKEN,
+            MAPBOX_DOWNLOAD_TOKEN: process.env.MAPBOX_DOWNLOAD_TOKEN,
+            TOPOGRAPHIC_URL: process.env.TOPOGRAPHIC_URL,
+            SATELLITE_URL: process.env.SATELLITE_URL,
+            SENTRY_DSN: process.env.SENTRY_DSN,
+            SUPABASE_URL: process.env.SUPABASE_URL,
+            SUPABASE_KEY: process.env.SUPABASE_KEY,
+            CLERK_PUBLISHABLE_KEY: process.env.CLERK_PUBLISHABLE_KEY
         }
     }
 };

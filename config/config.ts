@@ -23,8 +23,10 @@ export const CONFIG = {
     DSN: Constants.expoConfig?.extra?.SENTRY_DSN,
   },
   CLERK: {
-    // This can be public... Its not secret
-    PUBLISHABLE_KEY:
-      "pk_test_dG9nZXRoZXItZGFzc2llLTcxLmNsZXJrLmFjY291bnRzLmRldiQ",
+    PUBLISHABLE_KEY: Constants.expoConfig?.extra?.CLERK_PUBLISHABLE_KEY,
+  },
+  SUPABASE: {
+    URL: Constants.expoConfig?.extra?.SUPABASE_URL,
+    KEY: Constants.expoConfig?.extra?.SUPABASE_KEY,
   },
 };
