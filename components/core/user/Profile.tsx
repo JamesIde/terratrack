@@ -54,7 +54,11 @@ export default function Profile({
 
   return (
     <>
-      <View>
+      <View
+        style={{
+          height: "100%",
+        }}
+      >
         <View style={styles.profileDetails}>
           <View style={styles.avatarContainer}>
             <Image style={styles.avatar} source={{ uri: user?.imageUrl }} />
@@ -66,9 +70,6 @@ export default function Profile({
             <Text>
               Registered: {processLongDate(user?.createdAt!).toLocaleString()}
             </Text>
-            {/* <Loading marginTop="0" showText={false} /> */}
-            <Text>Favourite: Hiking</Text>
-            <Text>Total Distance: 100km</Text>
           </View>
         </View>
         <View>
@@ -78,7 +79,7 @@ export default function Profile({
             }}
           >
             <Text style={[globalStyles.boldHeader, ,]}>Your Activites</Text>
-            <Text>Activities synced to the cloud from your device.</Text>
+            <Text>Activities synced to the cloud from your device</Text>
           </View>
         </View>
         <View
@@ -104,6 +105,22 @@ export default function Profile({
             <Text>No activities yet.</Text>
           )}
         </View>
+        <Button
+          onPress={() =>
+            signOut().then(() => {
+              navigation.navigate("Terratrack");
+            })
+          }
+          mode="contained"
+          style={{
+            margin: 10,
+            bottom: 0,
+            right: 0,
+            position: "absolute",
+          }}
+        >
+          Sign Out
+        </Button>
       </View>
       <DeleteActivityModal
         modalVisible={modalVisible}
@@ -141,7 +158,7 @@ const styles = StyleSheet.create({
     marginBottom: "5%",
   },
   nameContainer: {
-    marginTop: "5%",
+    marginTop: "10%",
     marginLeft: "5%",
   },
 });
