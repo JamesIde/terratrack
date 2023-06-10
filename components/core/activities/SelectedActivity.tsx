@@ -1,10 +1,11 @@
-import { View, Text, Pressable, StyleSheet } from "react-native";
+import { View, Text, StyleSheet } from "react-native";
 import { Activity } from "../../../@types/activity";
 import { Button } from "react-native-paper";
 import { globalColors } from "../../../global/styles/globalColors";
 import ActivityMetadata from "./ActivityMetadata";
-import ElevationChart from "./ElevationChart";
-import { TouchableWithoutFeedback } from "react-native-gesture-handler";
+import UploadActivityButton from "../../buttons/UploadActivityButton";
+import { useEffect, useState } from "react";
+import { exists } from "../../../services/supabase.service";
 import { useUser } from "@clerk/clerk-expo";
 
 export default function SelectedActivity({
@@ -14,7 +15,7 @@ export default function SelectedActivity({
   activity: Activity | null;
   deselectActivity: () => void;
 }) {
-  const { isSignedIn } = useUser();
+  const { isSignedIn, user } = useUser();
   return (
     <>
       <View style={{ justifyContent: "space-between", flexDirection: "row" }}>
@@ -26,16 +27,7 @@ export default function SelectedActivity({
         >
           Back
         </Button>
-        {isSignedIn && (
-          <Button
-            mode="text"
-            onPress={() => console.log(`here`)}
-            icon="upload"
-            textColor={globalColors.primaryGreen}
-          >
-            Upload
-          </Button>
-        )}
+        {isSignedIn && <UploadActivityButton activity={activity!} />}
       </View>
       <View style={styles.container}>
         <View style={styles.centerContainer}>

@@ -14,6 +14,7 @@ export interface Database {
           coordinates: Json | null
           created_at: string | null
           description: string | null
+          distance: number | null
           duration: number | null
           elevation: Json | null
           endTime: string | null
@@ -27,6 +28,7 @@ export interface Database {
           coordinates?: Json | null
           created_at?: string | null
           description?: string | null
+          distance?: number | null
           duration?: number | null
           elevation?: Json | null
           endTime?: string | null
@@ -40,6 +42,7 @@ export interface Database {
           coordinates?: Json | null
           created_at?: string | null
           description?: string | null
+          distance?: number | null
           duration?: number | null
           elevation?: Json | null
           endTime?: string | null

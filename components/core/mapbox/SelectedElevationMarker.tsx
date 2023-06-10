@@ -4,7 +4,6 @@ import { PointAnnotation } from "@rnmapbox/maps";
 import { FontAwesome } from "@expo/vector-icons";
 export default function SelectedElevationMarker() {
   const marker = markerStore((state) => state.marker);
-  console.log(marker);
   return (
     <>
       {marker && (

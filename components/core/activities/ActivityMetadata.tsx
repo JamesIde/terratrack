@@ -4,9 +4,8 @@ import { Activity } from "../../../@types/activity";
 import { processDistance } from "../../../utils/transformers/processDistance";
 import { formatElevation } from "../../../utils/transformers/processElevation";
 import { formatShortFormTime } from "../../../utils/transformers/processTime";
-import { Entypo } from "@expo/vector-icons";
 import { activityStore } from "../../../stores/activityStore";
-
+import { AntDesign } from "@expo/vector-icons";
 export default function ActivityMetadata({ activity }: { activity: Activity }) {
   const setChartData = activityStore((state) => state.setChartData);
   return (
@@ -34,8 +33,29 @@ export default function ActivityMetadata({ activity }: { activity: Activity }) {
         onPress={() => setChartData(activity)}
       >
         <View>
-          <Text style={styles.label}>ELEVATION *</Text>
-          <Text style={styles.text}>
+          <View
+            style={{
+              flexDirection: "row",
+            }}
+          >
+            <AntDesign
+              name="areachart"
+              size={20}
+              color={globalColors.primaryDarkBlue}
+              style={{
+                paddingRight: 5,
+              }}
+            />
+            <Text style={styles.label}>ELEVATION</Text>
+          </View>
+          <Text
+            style={[
+              styles.text,
+              {
+                textAlign: "center",
+              },
+            ]}
+          >
             {formatElevation(activity.elevation.elevationGain)}
           </Text>
         </View>

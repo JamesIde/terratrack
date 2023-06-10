@@ -74,7 +74,6 @@ export default function Map() {
     } else {
       setFollowUser(false);
       await getCoords().then((location) => {
-        console.log(`got coords`);
         cameraRef.current?.fitBounds(
           [location.coords.longitude, location.coords.latitude],
           [location.coords.longitude, location.coords.latitude],
@@ -108,18 +107,7 @@ export default function Map() {
         updateDistance(coords.a, coords.b);
         updateElevation(locations[locations.length - 1].altitude!);
       }
-      // });
-    } else {
-      console.log(`not recording, but we got a new update`);
     }
-    let loc = data as ExpoLocation;
-    console.log(
-      printCurrentTime() +
-        " " +
-        loc.locations.length +
-        " " +
-        JSON.stringify(loc)
-    );
   });
 
   useEffect(() => {
@@ -141,7 +129,6 @@ export default function Map() {
 
     return () => {
       Location.stopLocationUpdatesAsync(TASK_FETCH_LOCATION).catch(() => {});
-      console.log(`stopped location updates`);
       if (recordingState.isStopped && !recordingState.isRecording) {
       }
     };

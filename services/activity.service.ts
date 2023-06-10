@@ -2,6 +2,11 @@ import { Activity } from "../@types/activity";
 import { ShowAlert } from "../utils/alert/alert";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
+/**
+ *
+ * activity Will be reworked when supabase integration is complete
+ */
+
 export async function addActivity(activity: Activity, id: string) {
   try {
     await AsyncStorage.setItem(id, JSON.stringify(activity));

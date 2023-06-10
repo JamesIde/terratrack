@@ -6,6 +6,7 @@ import { globalStyles } from "../../../global/styles/globalStyles";
 import { processLongDate } from "../../../utils/transformers/processDate";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { RootStackParamList } from "../../../@types/navigation";
+import { supabase } from "../../../lib/supabase";
 export default function Profile({
   navigation,
 }: {
@@ -14,7 +15,13 @@ export default function Profile({
   const { user } = useUser();
   const { signOut } = useAuth();
   useEffect(() => {
-    console.log(JSON.stringify(user));
+    supabase
+      .from("activities")
+      .select("*")
+      .then(({ data, error }) => {
+        if (error) console.log(error);
+        console.log(data);
+      });
   });
 
   return (
@@ -34,6 +41,16 @@ export default function Profile({
           </View>
         </View>
         <View>
+          <View
+            style={{
+              marginLeft: 15,
+            }}
+          >
+            <Text style={[globalStyles.boldHeader, ,]}>Your Activites</Text>
+            <Text>Activities synced to the cloud from your device.</Text>
+          </View>
+        </View>
+        {/* <View>
           <Button
             onPress={() => {
               signOut().then(() => {
@@ -45,7 +62,7 @@ export default function Profile({
           >
             Sign Out
           </Button>
-        </View>
+        </View> */}
       </View>
     </>
   );
@@ -62,7 +79,7 @@ const styles = StyleSheet.create({
   },
   avatarContainer: {
     marginRight: 10,
-    marginLeft: "10%",
+    marginLeft: "7%",
     marginTop: "5%",
     marginBottom: "5%",
   },

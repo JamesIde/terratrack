@@ -8,7 +8,7 @@ import { UserData } from "../@types/signup";
 import { getException } from "../services/exception.service";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { RootStackParamList } from "../@types/navigation";
-import ValidationError from "../components/core/common/ValidationError";
+import ValidationError from "../components/common/ValidationError";
 // { togglePage }: { togglePage: () => void }
 export default function SignInScreen({
   navigation,
@@ -48,6 +48,7 @@ export default function SignInScreen({
       });
       await setActive({ session: completeSignIn.createdSessionId }).then(() => {
         navigation.navigate("Terratrack" as never);
+        reset();
       });
     } catch (err: any) {
       getException(err);

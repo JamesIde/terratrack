@@ -73,7 +73,14 @@ export default function ActivitySheet() {
     return sort;
   }, [fetchedData, selectedSort, search]);
 
-  const snapPoints = useMemo(() => ["5%", "40%", "90%"], []);
+  const snapPoints = useMemo(() => {
+    console.log(`here`);
+    if (selectedActivity) {
+      return ["45%"];
+    } else {
+      return ["5%", "45%", "90%"];
+    }
+  }, []);
 
   const handleSheetChanges = useCallback((index: number) => {
     // Closed sheet
@@ -88,7 +95,7 @@ export default function ActivitySheet() {
     setSelectedActivity(activity);
     // Camera won't follow user, Map.tsx ref sets bounds to the Turf bbox
     setFollowUser(false);
-    sheetRef.current?.snapToIndex(1); // 50%
+    sheetRef.current?.snapToPosition("45");
   };
 
   const deselectActivity = () => {

@@ -3,7 +3,7 @@ import { Button, TextInput } from "react-native-paper";
 import { useSignUp, useUser } from "@clerk/clerk-expo";
 import { useEffect, useState } from "react";
 import { useForm, Controller } from "react-hook-form";
-import ValidationError from "../components/core/common/ValidationError";
+import ValidationError from "../components/common/ValidationError";
 import { getException } from "../services/exception.service";
 import { UserData } from "../@types/signup";
 import { globalStyles } from "../global/styles/globalStyles";

@@ -1,0 +1,56 @@
+import { Activity } from "../@types/activity";
+import { supabase } from "../lib/supabase";
+
+/**
+ * A service for interacting with supabase. It returns the underlying supabase response wrapped in a promise
+ */
+
+/**
+ * Upload activity to supabase
+ */
+export function upload(activity: Activity, userId: string) {
+  return supabase.from("activities").insert({
+    id: activity.id,
+    userId: userId,
+    coordinates: JSON.stringify(activity.coordinates),
+    metadata: JSON.stringify(activity.metadata),
+    elevation: JSON.stringify(activity.elevation),
+    description: activity.description,
+    distance: activity.distance,
+    duration: activity.duration,
+    startTime: JSON.stringify(activity.startTime),
+    endTime: JSON.stringify(activity.endTime),
+    type: activity.type,
+  });
+}
+
+/**
+ * Check if activity exists in supabase
+ */
+export async function exists(userId: string, activityId: string) {
+  let activity = await supabase
+    .from("activities")
+    .select("*")
+    .eq("userId", userId)
+    .eq("id", activityId)
+    .limit(1);
+  if (activity.data!.length === 1) {
+    return true;
+  }
+
+  return false;
+}
+
+/**
+ * Retrieve activity from supabase based on user Id
+ * @param userId
+ * @returns activity
+ */
+export async function retrieveAll(userId: string) {
+  let activities = await supabase
+    .from("activities")
+    .select("*")
+    .eq("userId", userId)
+    .order("created_at", { ascending: false });
+  return activities;
+}

@@ -14,7 +14,6 @@ const Drawer = createDrawerNavigator();
 export default function DrawerNavigator() {
   const navigation = useNavigation();
   const { isLoaded, isSignedIn, user } = useUser();
-  console.log(user?.imageUrl);
   let { isConnected } = NetInfo.useNetInfo();
 
   return (
