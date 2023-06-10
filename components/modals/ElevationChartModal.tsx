@@ -8,13 +8,10 @@ import {
   TouchableWithoutFeedback,
   ScrollView,
 } from "react-native";
-import { Activity, elevationMetadata } from "../../@types/activity";
+import { Activity } from "../../@types/activity";
 import { globalColors } from "../../global/styles/globalColors";
-import { Ionicons, Entypo } from "@expo/vector-icons";
-import ActivityMetadata from "../core/activities/ActivityMetadata";
 import ElevationChart from "../core/activities/ElevationChart";
 import { Button } from "react-native-paper";
-import { activityStore } from "../../stores/activityStore";
 export default function ElevationChartModal({
   modalVisible,
   chartData,

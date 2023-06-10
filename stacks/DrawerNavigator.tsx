@@ -9,10 +9,13 @@ import SignInScreen from "../screens/SignInScreen";
 import SignUpScreen from "../screens/SignUpScreen";
 import AccountScreen from "../screens/AccountScreen";
 import HomeScreen from "../screens/HomeScreen";
+import { NativeStackNavigationProp } from "@react-navigation/native-stack";
+import { RootStackParamList } from "../@types/navigation";
 const Drawer = createDrawerNavigator();
 
 export default function DrawerNavigator() {
-  const navigation = useNavigation();
+  const navigation =
+    useNavigation<NativeStackNavigationProp<RootStackParamList>>();
   const { isLoaded, isSignedIn, user } = useUser();
   let { isConnected } = NetInfo.useNetInfo();
 

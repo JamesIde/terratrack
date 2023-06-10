@@ -1,4 +1,4 @@
-import { elevationMetadata } from "../../@types/activity";
+import { ElevationMetadata } from "../../@types/activity";
 
 /**
  * Converts the array of elevation points into an object with metadata about the elevation.
@@ -6,7 +6,7 @@ import { elevationMetadata } from "../../@types/activity";
  */
 export function processElevation(
   elevationPoints: Array<number>
-): elevationMetadata {
+): ElevationMetadata {
   var maxElevation = Math.max(...elevationPoints);
   var minElevation = Math.min(...elevationPoints);
 

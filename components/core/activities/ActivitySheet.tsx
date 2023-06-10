@@ -22,7 +22,12 @@ import DeleteActivityModal from "../../modals/DeleteActivityModal";
 import * as Sentry from "@sentry/react-native";
 import ElevationChartModal from "../../modals/ElevationChartModal";
 import { searchStore } from "../../../stores/searchStore";
+import { useNavigation } from "@react-navigation/native";
+import { NativeStackNavigationProp } from "@react-navigation/native-stack";
+import { RootStackParamList } from "../../../@types/navigation";
 export default function ActivitySheet() {
+  const navigation =
+    useNavigation<NativeStackNavigationProp<RootStackParamList>>();
   // Need to read up on useCallback and useMemo too. Been a while and don't fully understand whats happening here.
   const sheetRef = useRef<BottomSheet>(null);
   const [deleteModalVisible, setDeleteModalVisible] = useState(false);
@@ -33,14 +38,18 @@ export default function ActivitySheet() {
 
   const [
     selectedActivity,
+    navigatedFromAccount,
     chartData,
     setSelectedActivity,
     setElevationMetadata,
+    setNavigatedFromAccount,
   ] = activityStore((state) => [
     state.selectedActivity,
+    state.navigatedFromAccount,
     state.chartData,
     state.setSelectedActivity,
     state.setChartData,
+    state.setNavigatedFromAccount,
   ]);
   const setFollowUser = trackingStore((state) => state.setFollowUser);
   const [search, setSearch] = searchStore((state) => [
@@ -63,7 +72,8 @@ export default function ActivitySheet() {
   useEffect(() => {
     handleElevationChart();
     fetchData();
-  }, [chartData]);
+  }, [chartData, selectedActivity]);
+
   const data = useMemo(() => {
     let sort = processActivitySorting(
       fetchedData,
@@ -74,7 +84,6 @@ export default function ActivitySheet() {
   }, [fetchedData, selectedSort, search]);
 
   const snapPoints = useMemo(() => {
-    console.log(`here`);
     if (selectedActivity) {
       return ["45%"];
     } else {
@@ -100,10 +109,15 @@ export default function ActivitySheet() {
 
   const deselectActivity = () => {
     setSelectedActivity(null);
-    // Returns camera view to user location
     setFollowUser(true);
     setSearch("");
-    sheetRef.current?.snapToIndex(2); // 80%
+    if (navigatedFromAccount) {
+      setNavigatedFromAccount(false);
+      navigation.navigate("Account");
+      sheetRef.current?.snapToIndex(0);
+    } else {
+      sheetRef.current?.snapToIndex(2); // 80%
+    }
   };
 
   const removeActivity = async (id: string) => {
@@ -120,10 +134,6 @@ export default function ActivitySheet() {
         sheetRef.current?.snapToIndex(1);
       }
     }
-
-    // If modal is closed, set chart to false.
-    // Set selectedActivity to that in state
-    // open sheetRef.snapIndex 1
   };
 
   return (

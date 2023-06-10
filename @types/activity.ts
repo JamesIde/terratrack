@@ -13,17 +13,18 @@ export interface Activity {
   distance: number;
   coordinates: Position[];
   id: string;
+  userId?: string;
   metadata: ActivityMetadata;
-  elevation: elevationMetadata;
+  elevation: ElevationMetadata;
 }
 
-export interface elevationMetadata {
+export interface ElevationMetadata {
   maxElevation: number;
   minElevation: number;
   elevationGain: number;
   elevationPoints: number[];
 }
 
-interface ActivityMetadata {
+export interface ActivityMetadata {
   color: string;
 }
