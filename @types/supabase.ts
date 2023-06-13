@@ -20,6 +20,7 @@ export interface Database {
           endTime: string | null
           id: string
           metadata: Json | null
+          slug: string | null
           startTime: string | null
           type: string | null
           userId: string | null
@@ -34,6 +35,7 @@ export interface Database {
           endTime?: string | null
           id: string
           metadata?: Json | null
+          slug?: string | null
           startTime?: string | null
           type?: string | null
           userId?: string | null
@@ -48,6 +50,7 @@ export interface Database {
           endTime?: string | null
           id?: string
           metadata?: Json | null
+          slug?: string | null
           startTime?: string | null
           type?: string | null
           userId?: string | null

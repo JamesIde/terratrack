@@ -26,6 +26,7 @@ export function upload(activity: Activity, userId: string) {
     startTime: JSON.stringify(activity.startTime),
     endTime: JSON.stringify(activity.endTime),
     type: activity.type,
+    slug: activity.slug,
   });
 }
 
@@ -88,6 +89,7 @@ export async function retrieveAndParse(userId: string) {
           startTime: new Date(activity.startTime!),
           endTime: new Date(activity.endTime!),
           type: activity.type!,
+          slug: activity.slug!,
         });
         totalDistance += activity.distance!;
       });

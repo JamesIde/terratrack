@@ -13,6 +13,7 @@ import { trackingStore } from "../../stores/trackingStore";
 import BeforeYouStardActivityModal from "../modals/BeforeYouStartModal";
 import uuid from "react-native-uuid";
 import StatOverlay from "../core/overlay/statOverlay";
+import { convertTitleToSlug } from "../../utils/transformers/processSlug";
 // TODO the elapsed time is still broken
 // This component is probably doing too much. Its probably the worst code I've ever written.
 export default function Recording() {
@@ -123,7 +124,9 @@ export default function Recording() {
       },
       elevation: processElevation(elevationArr),
       id,
+      slug: convertTitleToSlug(preActivityForm.description!),
     };
+    console.log(currentActivity);
     await addActivity(currentActivity, id).then(() => {
       clearState();
     });

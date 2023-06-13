@@ -16,6 +16,7 @@ export interface Activity {
   userId?: string;
   metadata: ActivityMetadata;
   elevation: ElevationMetadata;
+  slug: string;
 }
 
 export interface ElevationMetadata {
