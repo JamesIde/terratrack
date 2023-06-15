@@ -6,7 +6,8 @@ import ActivitySheet from "../components/core/activities/ActivitySheet";
 import { globalStyles } from "../global/styles/globalStyles";
 import Map from "../components/core/mapbox/Map";
 import Loading from "../components/common/Loading";
-
+import { ShowAlert } from "../utils/alert/alert";
+import { Linking } from "react-native";
 export default function HomeScreen() {
   const [permissionsGranted, setPermissionsGranted] = useState(false);
   const checkPermissions = async () => {
@@ -17,12 +18,24 @@ export default function HomeScreen() {
       return;
     } else if (!foreground.granted && foreground.canAskAgain) {
       await Location.requestForegroundPermissionsAsync().then((res) => {
-        console.log(`requestForegroundPermissionsAsync ${JSON.stringify(res)}`);
         if (res.granted) {
           setPermissionsGranted(true);
           return;
         }
       });
+    } else {
+      ShowAlert(
+        "Location permissions required",
+        "Please enable location permissions in your settings and restart the app.",
+        [
+          {
+            text: "Open Settings",
+            onPress: () => {
+              Linking.openSettings();
+            },
+          },
+        ]
+      );
     }
   };
 
