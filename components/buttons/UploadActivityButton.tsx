@@ -45,7 +45,6 @@ export default function UploadActivityButton({
       }
       setLoading(false);
     } catch (error) {
-      console.log(JSON.stringify(error, null, 2));
       setLoading(false);
     }
   }

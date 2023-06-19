@@ -26,6 +26,7 @@ import { ExpoLocation } from "../../../@types/expoLocation";
 import { transformCoord } from "../../../utils/transformers/processCoord";
 import { printCurrentTime } from "../../../utils/printTime";
 import SelectedElevationMarker from "./SelectedElevationMarker";
+import { useNavigation } from "@react-navigation/native";
 /**
  * The coordinates for point annotation follow [longitude, latitude]. Longitude is the bigger number (138), latitude is the smaller number (-35).
  */
@@ -34,6 +35,7 @@ Mapbox.setAccessToken(CONFIG.MAP.ACCESS_TOKEN);
 const TASK_FETCH_LOCATION = "TASK_FETCH_LOCATION";
 
 export default function Map() {
+  const navigation = useNavigation();
   // This allows the camera to move back to user location after selected activity deselection
   const cameraRef = useRef<CameraRef>(null);
   const mapStyle = mapStore((state) => state.mapStyle);
@@ -61,6 +63,7 @@ export default function Map() {
     let ne: Position = [0, 0];
     let sw: Position = [0, 0];
     if (selectedActivity) {
+      console.log(`here`);
       let coords = Turf.lineString(selectedActivity.coordinates);
       let bbox = Turf.bbox(coords);
       ne = [bbox[2], bbox[3]];
@@ -72,6 +75,7 @@ export default function Map() {
         100
       );
     } else {
+      console.log(`not here`);
       setFollowUser(false);
       await getCoords().then((location) => {
         cameraRef.current?.fitBounds(
@@ -111,6 +115,8 @@ export default function Map() {
   });
 
   useEffect(() => {
+    cameraRef.current?.setCamera({});
+
     zoomToActivity();
     if (recordingState.isRecording) {
       Location.startLocationUpdatesAsync(TASK_FETCH_LOCATION, {
@@ -129,8 +135,6 @@ export default function Map() {
 
     return () => {
       Location.stopLocationUpdatesAsync(TASK_FETCH_LOCATION).catch(() => {});
-      if (recordingState.isStopped && !recordingState.isRecording) {
-      }
     };
     // Cleanup the interval when the component unmounts
   }, [selectedActivity, recordingState]);
@@ -180,7 +184,7 @@ export default function Map() {
             <FocusCurrentPosition />
             <MapStyleButton />
             {/* <StatOverlay /> */}
-            <Recording />
+            <Recording navigation={navigation} />
           </>
         )}
       </>

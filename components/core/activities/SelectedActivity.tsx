@@ -15,7 +15,6 @@ export default function SelectedActivity({
   activity: Activity | null;
   deselectActivity: () => void;
 }) {
-  console.log(JSON.stringify(activity));
   const { isSignedIn, user } = useUser();
   return (
     <>

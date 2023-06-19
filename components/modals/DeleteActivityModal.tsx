@@ -14,7 +14,7 @@ export default function DeleteActivityModal({
       transparent={true}
       animationType="fade"
       onRequestClose={() => {
-        console.log(`closed here`);
+        closeModal(false);
       }}
     >
       <View style={styles.centeredView}>

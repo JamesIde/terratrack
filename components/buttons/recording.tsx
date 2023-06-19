@@ -14,30 +14,32 @@ import BeforeYouStardActivityModal from "../modals/BeforeYouStartModal";
 import uuid from "react-native-uuid";
 import StatOverlay from "../core/overlay/statOverlay";
 import { convertTitleToSlug } from "../../utils/transformers/processSlug";
+import { activityStore } from "../../stores/activityStore";
+import { NativeStackNavigationProp } from "@react-navigation/native-stack";
+import { RootStackParamList } from "../../@types/navigation";
 // TODO the elapsed time is still broken
 // This component is probably doing too much. Its probably the worst code I've ever written.
-export default function Recording() {
-  const [
-    locations,
-    elevationArr,
-    distance,
-    recordingState,
-    handleRecording,
-    updateDistance,
-    updateElevation,
-  ] = recordingStore((state) => [
-    state.locations,
-    state.elevationArr,
-    state.distance,
-    state.recordingState,
-    state.handleRecording,
-    state.updateDistance,
-    state.updateElevation,
-  ]);
+export default function Recording({
+  navigation,
+}: {
+  navigation: NativeStackNavigationProp<RootStackParamList>;
+}) {
+  const [locations, elevationArr, distance, recordingState, handleRecording] =
+    recordingStore((state) => [
+      state.locations,
+      state.elevationArr,
+      state.distance,
+      state.recordingState,
+      state.handleRecording,
+    ]);
   const [followUser, setFollowUser] = trackingStore((state) => [
     state.followUser,
     state.setFollowUser,
   ]);
+
+  const [setSelectedActivity, setNavigatedFromAccount] = activityStore(
+    (state) => [state.setSelectedActivity, state.setNavigatedFromAccount]
+  );
 
   const [preActivityForm, setPreActivityForm] = useState({
     activityType: "",
@@ -110,7 +112,6 @@ export default function Recording() {
   const stopRecording = async () => {
     // Need id as the activity object for key-extractor in flat list. id is also the key in async storage kv
     let id: string = uuid.v4().toString();
-    console.log(`total seconds ${timeData.elapsedTime}`);
     let currentActivity: Activity = {
       description: preActivityForm.description,
       type: preActivityForm.activityType,
@@ -126,9 +127,11 @@ export default function Recording() {
       id,
       slug: convertTitleToSlug(preActivityForm.description!),
     };
-    console.log(currentActivity);
     await addActivity(currentActivity, id).then(() => {
       clearState();
+      setSelectedActivity(currentActivity);
+      setNavigatedFromAccount(false);
+      navigation.navigate("Terratrack");
     });
   };
 

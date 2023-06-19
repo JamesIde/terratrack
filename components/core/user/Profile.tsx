@@ -15,6 +15,7 @@ import { Activity } from "../../../@types/activity";
 import Loading from "../../common/Loading";
 import DeleteActivityModal from "../../modals/DeleteActivityModal";
 import { activityStore } from "../../../stores/activityStore";
+import { ShowAlert } from "../../../utils/alert/alert";
 export default function Profile({
   navigation,
 }: {
@@ -37,7 +38,6 @@ export default function Profile({
     setLoading(true);
     retrieveAndParse(user!.id).then((res) => {
       setData(res.activities);
-      console.log(res.activityTypeCount, res.totalDistance);
       setLoading(false);
     });
   }
@@ -85,6 +85,8 @@ export default function Profile({
         <View
           style={{
             margin: 10,
+            flex: 1,
+            height: "100%",
           }}
         >
           {loading ? (
@@ -130,7 +132,15 @@ export default function Profile({
               if (res.status === 204) {
                 fetch();
               } else {
-                console.log(res);
+                ShowAlert(
+                  "Error",
+                  "Something went wrong. Please ensure your device is connected and try again later.",
+                  [
+                    {
+                      text: "Ok",
+                    },
+                  ]
+                );
               }
             });
             setModalVisible(false);

@@ -53,7 +53,7 @@ export default function DrawerNavigator() {
           ) : (
             <Image
               style={styles.tinyLogo}
-              source={require("../assets/icon.png")}
+              source={require("../assets/terratrack.png")}
             />
           ),
       }}

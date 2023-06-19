@@ -82,7 +82,6 @@ export default function SignUpScreen({
           code,
         })
         .then(async (res) => {
-          console.log(res);
           await setActive({ session: res.createdSessionId }).then(() => {
             navigation.navigate("Terratrack");
             setPendingVerification(false);
