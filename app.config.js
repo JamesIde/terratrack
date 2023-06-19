@@ -11,24 +11,23 @@ export default {
         splash: {
             image: "./assets/splash.png",
             resizeMode: "contain",
-            backgroundColor: "#ffffff"
+            backgroundColor: "#1A162A"
         },
         assetBundlePatterns: [
             "**/*"
         ],
         ios: {
-            supportsTablet: true
+            supportsTablet: false
         },
         android: {
             icon: "./assets/icon.png",
             package: "com.tudor14abw.terratrack",
             permissions: [
                 "ACCESS_FINE_LOCATION",
-                "ACCESS_COARSE_LOCATION",
-                "ACCESS_BACKGROUND_LOCATION"]
+                "ACCESS_COARSE_LOCATION"]
         },
         web: {
-            favicon: "./assets/favicon.png"
+            favicon: "./assets/terratrack.png"
         },
         plugins: [
             [
