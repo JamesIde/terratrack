@@ -29,4 +29,7 @@ export const CONFIG = {
     URL: Constants.expoConfig?.extra?.SUPABASE_URL,
     KEY: Constants.expoConfig?.extra?.SUPABASE_KEY,
   },
+  WEB: {
+    URL: "https://terratrack-web.vercel.app/",
+  },
 };

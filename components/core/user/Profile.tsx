@@ -16,6 +16,8 @@ import Loading from "../../common/Loading";
 import DeleteActivityModal from "../../modals/DeleteActivityModal";
 import { activityStore } from "../../../stores/activityStore";
 import { ShowAlert } from "../../../utils/alert/alert";
+import { Linking } from "react-native";
+import { CONFIG } from "../../../config/config";
 export default function Profile({
   navigation,
 }: {
@@ -78,7 +80,26 @@ export default function Profile({
               marginLeft: 15,
             }}
           >
-            <Text style={[globalStyles.boldHeader, ,]}>Your Activites</Text>
+            <View
+              style={{
+                flexDirection: "row",
+              }}
+            >
+              <Text style={[globalStyles.boldHeader]}>Your Activites</Text>
+              <Button
+                mode="text"
+                onPress={() => {
+                  // TODO FIX
+                  Linking.openURL(CONFIG.WEB.URL);
+                }}
+                style={{
+                  marginLeft: 10,
+                  marginTop: 5,
+                }}
+              >
+                View Online
+              </Button>
+            </View>
             <Text>Activities synced to the cloud from your device</Text>
           </View>
         </View>

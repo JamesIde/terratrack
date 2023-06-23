@@ -1,4 +1,4 @@
-import { View, StyleSheet, Dimensions } from "react-native";
+import { View, StyleSheet, Dimensions, Platform } from "react-native";
 import { IconButton } from "react-native-paper";
 import { recordingStore } from "../../stores/recordingStore";
 import { RecordingStateEnum } from "../../@types/enum/recordingStateEnum";
@@ -17,7 +17,8 @@ import { convertTitleToSlug } from "../../utils/transformers/processSlug";
 import { activityStore } from "../../stores/activityStore";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { RootStackParamList } from "../../@types/navigation";
-// TODO the elapsed time is still broken
+import BatteryOptimizationModal from "../modals/BatteryOptimizationModal";
+import * as Battery from "expo-battery";
 // This component is probably doing too much. Its probably the worst code I've ever written.
 export default function Recording({
   navigation,
@@ -47,6 +48,7 @@ export default function Recording({
   });
 
   const [modalVisible, setModalVisible] = useState(false);
+  const [batModVisible, setBatMobVisible] = useState(false);
   const [timeData, setTimeData] = useState({
     elapsedTime: 0,
     startTime: new Date(0),
@@ -84,7 +86,20 @@ export default function Recording({
     locations,
   ]);
 
-  const startRecording = () => {
+  const startRecording = async () => {
+    if (
+      Platform.OS === "android" &&
+      (await Battery.isBatteryOptimizationEnabledAsync())
+    ) {
+      setBatMobVisible(true);
+    } else {
+      setModalVisible(true);
+    }
+  };
+
+  const dismissBatteryModal = () => {
+    // Either dismiss, or they've gone to settings
+    setBatMobVisible(false);
     setModalVisible(true);
   };
 
@@ -225,6 +240,10 @@ export default function Recording({
       <BeforeYouStardActivityModal
         modalVisible={modalVisible}
         closeModal={closeModal}
+      />
+      <BatteryOptimizationModal
+        modalVisible={batModVisible}
+        closeModal={dismissBatteryModal}
       />
       <View style={styles.container}>{renderIcons()}</View>
     </>

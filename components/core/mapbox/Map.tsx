@@ -184,7 +184,7 @@ export default function Map() {
             <FocusCurrentPosition />
             <MapStyleButton />
             {/* <StatOverlay /> */}
-            <Recording navigation={navigation} />
+            <Recording navigation={navigation as any} />
           </>
         )}
       </>
