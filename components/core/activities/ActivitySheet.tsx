@@ -158,6 +158,9 @@ export default function ActivitySheet() {
                 <ActivitySortButton />
                 <ActivitySheetHeader />
               </View>
+              <Text style={{ marginBottom: 10 }}>
+                Activities that are stored locally on your device
+              </Text>
               <ActivitySearchBar />
             </View>
             {data.length > 0 ? (

@@ -2,7 +2,7 @@
 import "dotenv/config"
 export default {
     expo: {
-        name: "terratrack",
+        name: "Terratrack",
         slug: "terratrack",
         version: "1.0.0",
         orientation: "portrait",
@@ -24,7 +24,8 @@ export default {
             package: "com.tudor14abw.terratrack",
             permissions: [
                 "ACCESS_FINE_LOCATION",
-                "ACCESS_COARSE_LOCATION"]
+                "ACCESS_COARSE_LOCATION"
+            ]
         },
         web: {
             favicon: "./assets/terratrack.png"

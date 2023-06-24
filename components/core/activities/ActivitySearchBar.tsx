@@ -1,4 +1,4 @@
-import { View, StyleSheet, TextInput } from "react-native";
+import { View, Text, StyleSheet, TextInput } from "react-native";
 import { EvilIcons } from "@expo/vector-icons";
 import { globalColors } from "../../../global/styles/globalColors";
 import { searchStore } from "../../../stores/searchStore";
@@ -25,7 +25,7 @@ const styles = StyleSheet.create({
     backgroundColor: globalColors.primaryWhite,
     padding: 2,
     borderRadius: 7,
-    marginBottom: 25,
+    marginBottom: 15,
   },
   icon: {
     marginTop: 1,

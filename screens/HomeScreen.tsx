@@ -1,7 +1,16 @@
 import { useState, useEffect } from "react";
-import { View, Text, Platform, ActivityIndicator } from "react-native";
+import {
+  View,
+  Text,
+  Platform,
+  ActivityIndicator,
+  RefreshControl,
+} from "react-native";
 import * as Location from "expo-location";
-import { GestureHandlerRootView } from "react-native-gesture-handler";
+import {
+  GestureHandlerRootView,
+  ScrollView,
+} from "react-native-gesture-handler";
 import ActivitySheet from "../components/core/activities/ActivitySheet";
 import { globalStyles } from "../global/styles/globalStyles";
 import Map from "../components/core/mapbox/Map";
@@ -10,9 +19,12 @@ import { ShowAlert } from "../utils/alert/alert";
 import { Linking } from "react-native";
 export default function HomeScreen() {
   const [permissionsGranted, setPermissionsGranted] = useState(false);
+  const [refreshing, setRefreshing] = useState(false);
+
   const checkPermissions = async () => {
     // TODO tidy this up
     let foreground = await Location.getForegroundPermissionsAsync();
+    console.log(JSON.stringify(foreground, null, 2));
     if (foreground.granted) {
       setPermissionsGranted(true);
       return;
@@ -21,6 +33,19 @@ export default function HomeScreen() {
         if (res.granted) {
           setPermissionsGranted(true);
           return;
+        } else {
+          ShowAlert(
+            "Location permissions required",
+            "Please enable location permissions in your settings and restart the app.",
+            [
+              {
+                text: "Open Settings",
+                onPress: () => {
+                  Linking.openSettings();
+                },
+              },
+            ]
+          );
         }
       });
     } else {
@@ -44,6 +69,13 @@ export default function HomeScreen() {
       checkPermissions();
     }
   }, [permissionsGranted]);
+
+  const onRefresh = () => {
+    setRefreshing(true);
+    checkPermissions();
+    setRefreshing(false);
+  };
+
   return (
     <>
       {permissionsGranted ? (
@@ -52,7 +84,14 @@ export default function HomeScreen() {
           <ActivitySheet />
         </GestureHandlerRootView>
       ) : (
-        <Loading marginTop="50" />
+        <ScrollView
+          refreshControl={
+            <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+          }
+        >
+          <Loading marginTop="50" />
+          <Text style={{ textAlign: "center" }}>Pull down to refresh</Text>
+        </ScrollView>
       )}
     </>
   );
