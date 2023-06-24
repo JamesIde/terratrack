@@ -24,7 +24,6 @@ export default function HomeScreen() {
   const checkPermissions = async () => {
     // TODO tidy this up
     let foreground = await Location.getForegroundPermissionsAsync();
-    console.log(JSON.stringify(foreground, null, 2));
     if (foreground.granted) {
       setPermissionsGranted(true);
       return;

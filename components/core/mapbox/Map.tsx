@@ -63,7 +63,6 @@ export default function Map() {
     let ne: Position = [0, 0];
     let sw: Position = [0, 0];
     if (selectedActivity) {
-      console.log(`here`);
       let coords = Turf.lineString(selectedActivity.coordinates);
       let bbox = Turf.bbox(coords);
       ne = [bbox[2], bbox[3]];
@@ -75,7 +74,6 @@ export default function Map() {
         100
       );
     } else {
-      console.log(`not here`);
       setFollowUser(false);
       await getCoords().then((location) => {
         cameraRef.current?.fitBounds(
