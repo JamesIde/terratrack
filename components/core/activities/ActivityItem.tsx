@@ -31,7 +31,8 @@ export default function ActivityItem({
               style={[
                 styles.dot,
                 {
-                  backgroundColor: activity.metadata.color,
+                  backgroundColor:
+                    activity.metadata.color ?? globalColors.primaryLightBlue,
                 },
               ]}
             />

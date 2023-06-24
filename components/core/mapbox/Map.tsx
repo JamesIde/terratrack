@@ -16,6 +16,7 @@ import { Position } from "@rnmapbox/maps/lib/typescript/types/Position";
 import * as Turf from "@turf/turf";
 import * as Location from "expo-location";
 import * as TaskManager from "expo-task-manager";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 import SelectedShapeSource from "./SelectedShapeSource";
 import Recording from "../../buttons/Recording";
@@ -113,8 +114,6 @@ export default function Map() {
   });
 
   useEffect(() => {
-    cameraRef.current?.setCamera({});
-
     zoomToActivity();
     if (recordingState.isRecording) {
       Location.startLocationUpdatesAsync(TASK_FETCH_LOCATION, {

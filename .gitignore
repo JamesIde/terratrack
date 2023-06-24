@@ -19,3 +19,4 @@ web-build/
 .env
 ios/sentry.properties
 android/sentry.properties
+builds

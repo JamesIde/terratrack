@@ -5,7 +5,7 @@ export const markerStore = create<{
   marker: Position | null;
   setMarker: (marker: Position | null) => void;
 }>((set) => ({
-  marker: [0, 0],
+  marker: null,
   setMarker: (marker: Position | null) => {
     set(() => ({
       marker,
