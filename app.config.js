@@ -51,6 +51,14 @@ export default {
             SUPABASE_URL: process.env.SUPABASE_URL,
             SUPABASE_KEY: process.env.SUPABASE_KEY,
             CLERK_PUBLISHABLE_KEY: process.env.CLERK_PUBLISHABLE_KEY
+        },
+        updates: {
+            "url": "https://u.expo.dev/611c0648-6e8d-421d-aa28-a2dfb0f5a1d8"
+        },
+        runtimeVersion: {
+            "policy": "sdkVersion"
         }
+
+
     }
 };

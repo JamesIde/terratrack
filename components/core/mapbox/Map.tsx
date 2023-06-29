@@ -154,7 +154,6 @@ export default function Map() {
         zoomEnabled={true}
         scaleBarEnabled={false}
         scrollEnabled={true}
-        // TODO own sat/topo URLS. not WAT
         styleURL={mapStyle.URL}
       >
         <Camera
@@ -170,6 +169,9 @@ export default function Map() {
           animated={true}
           requestsAlwaysUse={true}
           visible={true}
+          onUpdate={(location) => {
+            // update your state
+          }}
         />
         <CurrentShapeSource />
         <SelectedShapeSource />
