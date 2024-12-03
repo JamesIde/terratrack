@@ -1,16 +1,7 @@
 import { useState, useEffect } from "react";
-import {
-  View,
-  Text,
-  Platform,
-  ActivityIndicator,
-  RefreshControl,
-} from "react-native";
+import { View, Text, Platform, ActivityIndicator, RefreshControl } from "react-native";
 import * as Location from "expo-location";
-import {
-  GestureHandlerRootView,
-  ScrollView,
-} from "react-native-gesture-handler";
+import { GestureHandlerRootView, ScrollView } from "react-native-gesture-handler";
 import ActivitySheet from "../components/core/activities/ActivitySheet";
 import { globalStyles } from "../global/styles/globalStyles";
 import Map from "../components/core/mapbox/Map";
@@ -22,7 +13,6 @@ export default function HomeScreen() {
   const [refreshing, setRefreshing] = useState(false);
 
   const checkPermissions = async () => {
-    // TODO tidy this up
     let foreground = await Location.getForegroundPermissionsAsync();
     if (foreground.granted) {
       setPermissionsGranted(true);
@@ -83,11 +73,7 @@ export default function HomeScreen() {
           <ActivitySheet />
         </GestureHandlerRootView>
       ) : (
-        <ScrollView
-          refreshControl={
-            <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
-          }
-        >
+        <ScrollView refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}>
           <Loading marginTop="50" />
           <Text style={{ textAlign: "center" }}>Pull down to refresh</Text>
         </ScrollView>
